@@ -1,3 +1,14 @@
+To develop on `PoissonRecon`, use:
+
+```bash
+# Start a Docker container with local directory mapped to `/docker` and using a bash shell
+docker run -v "$PWD:/docker" -it --name poisson_recon_develop lambci/lambda:build /bin/bash
+```
+
+Normal README below
+
+---------
+
 <CENTER><H2>Screened Poisson Surface Reconstruction <BR>(and Smoothed Signed Distance Reconstruction)<BR>Version 9.01</H2></CENTER>
 <CENTER>
 <A HREF="#LINKS">links</A>
