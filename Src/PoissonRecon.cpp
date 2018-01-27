@@ -113,7 +113,6 @@ void DumpOutput2( std::vector< char* >& comments  , const char* format , ... )
 
 
 cmdLineString
-	In( "in" ) ,
 	Out( "out" ) ,
 	VoxelGrid( "voxel" ) ,
 	XForm( "xForm" );
@@ -168,7 +167,7 @@ cmdLineReadable* params[] =
 #ifndef FAST_COMPILE
 	&Degree , &Double , &BType ,
 #endif // !FAST_COMPILE
-	&In , &Depth , &Out , &XForm ,
+	&Depth , &Out , &XForm ,
 	&Scale , &Verbose , &CGSolverAccuracy , &NoComments , &LowResIterMultiplier ,
 	&KernelDepth , &SamplesPerNode , &Confidence , &NormalWeights , &NonManifold , &PolygonMesh , &ASCII , &ShowResidual , &VoxelDepth ,
 	&PointWeight , &VoxelGrid , &Threads , &MaxSolveDepth ,
@@ -188,8 +187,6 @@ cmdLineReadable* params[] =
 void ShowUsage(char* ex)
 {
 	printf( "Usage: %s\n" , ex );
-	printf( "\t --%s <input points>\n" , In.name );
-
 	printf( "\t[--%s <ouput triangle mesh>]\n" , Out.name );
 
 	printf( "\t[--%s <ouput voxel grid>]\n" , VoxelGrid.name );
@@ -468,7 +465,7 @@ int _Execute( int argc , char* argv[] )
 	{
 		profiler.start();
 		PointStream* pointStream;
-		char* ext = GetFileExtension( In.value );
+		char* ext = "ply";
 		if( Color.set && Color.value>0 )
 		{
 			sampleData = new std::vector< ProjectiveData< Point3D< Real > , Real > >();
