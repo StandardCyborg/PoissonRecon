@@ -1,7 +1,10 @@
 #include <iostream>
 #include <stdio.h>
+#include <string>
 
 int main(int argc, char* argv[]) {
-  std::cout << std::cin;
+  int foo;
+  foo << std::cin;
+  std::out << foo;
   return 0;
 }
