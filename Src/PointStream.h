@@ -202,6 +202,7 @@ public:
 template< class Real >
 class PLYOrientedPointStream : public OrientedPointStream< Real >
 {
+	char* _fileName;
 	PlyFile* _ply;
 	int _nr_elems;
 	char **_elist;
@@ -219,6 +220,7 @@ template< class Real , class Data >
 class PLYOrientedPointStreamWithData : public OrientedPointStreamWithData< Real , Data >
 {
 	struct _PlyOrientedVertexWithData : public PlyOrientedVertex< Real > { Data data; };
+	char* _fileName;
 	PlyFile* _ply;
 	int _nr_elems;
 	char **_elist;

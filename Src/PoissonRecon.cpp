@@ -463,13 +463,12 @@ int _Execute( int argc , char* argv[] )
 		if( Color.set && Color.value>0 )
 		{
 			sampleData = new std::vector< ProjectiveData< Point3D< Real > , Real > >();
-			pointStream = new PLYOrientedPointStreamWithData< Real , Point3D< Real > >( ColorInfo< Real >::PlyProperties , 6 , ColorInfo< Real >::ValidPlyProperties );
+			pointStream = new PLYOrientedPointStreamWithData< Real , Point3D< Real > >( "src.ply", ColorInfo< Real >::PlyProperties , 6 , ColorInfo< Real >::ValidPlyProperties );
 		}
 		else
 		{
-			pointStream = new PLYOrientedPointStream< Real >( );
+			pointStream = new PLYOrientedPointStream< Real >( "src.ply" );
 		}
-		delete[] ext;
 		XPointStream _pointStream( xForm , *pointStream );
 		xForm = GetPointXForm( _pointStream , (Real)Scale.value ) * xForm;
 		if( sampleData )
