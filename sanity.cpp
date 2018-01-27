@@ -1,12 +1,12 @@
 #include <iostream>
 #include <string>
-using namespace std;
 
 int main() {
-  string input_line;
-  while(cin) {
-    getline(cin, input_line);
-    cout << input_line << endl;
+  // https://stackoverflow.com/a/17959055
+  std::string input_line;
+  while(std::cin) {
+    getline(std::cin, input_line);
+    std::cout << input_line << std::endl;
   };
 
   return 0;
