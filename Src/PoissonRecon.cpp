@@ -437,11 +437,6 @@ int _Execute( int argc , char* argv[] )
 	Octree< Real > tree;
 	OctreeProfiler< Real > profiler( tree );
 	tree.threads = Threads.value;
-	if( !In.set )
-	{
-		ShowUsage( argv[0] );
-		return 0;
-	}
 	if( !MaxSolveDepth.set ) MaxSolveDepth.value = Depth.value;
 	
 	OctNode< TreeNodeData >::SetAllocator( MEMORY_ALLOCATOR_BLOCK_SIZE );
@@ -465,19 +460,14 @@ int _Execute( int argc , char* argv[] )
 	{
 		profiler.start();
 		PointStream* pointStream;
-		char* ext = "ply";
 		if( Color.set && Color.value>0 )
 		{
 			sampleData = new std::vector< ProjectiveData< Point3D< Real > , Real > >();
-			if     ( !strcasecmp( ext , "bnpts" ) ) pointStream = new BinaryOrientedPointStreamWithData< Real , Point3D< Real > , float , Point3D< unsigned char > >( In.value );
-			else if( !strcasecmp( ext , "ply"   ) ) pointStream = new    PLYOrientedPointStreamWithData< Real , Point3D< Real > >( In.value , ColorInfo< Real >::PlyProperties , 6 , ColorInfo< Real >::ValidPlyProperties );
-			else                                    pointStream = new  ASCIIOrientedPointStreamWithData< Real , Point3D< Real > >( In.value , ColorInfo< Real >::ReadASCII );
+			pointStream = new PLYOrientedPointStreamWithData< Real , Point3D< Real > >( ColorInfo< Real >::PlyProperties , 6 , ColorInfo< Real >::ValidPlyProperties );
 		}
 		else
 		{
-			if     ( !strcasecmp( ext , "bnpts" ) ) pointStream = new BinaryOrientedPointStream< Real , float >( In.value );
-			else if( !strcasecmp( ext , "ply"   ) ) pointStream = new    PLYOrientedPointStream< Real >( In.value );
-			else                                    pointStream = new  ASCIIOrientedPointStream< Real >( In.value );
+			pointStream = new PLYOrientedPointStream< Real >( );
 		}
 		delete[] ext;
 		XPointStream _pointStream( xForm , *pointStream );
