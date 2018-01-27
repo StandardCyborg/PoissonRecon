@@ -5,19 +5,24 @@
 #include <string>
 
 int main() {
+  // Load in all content into a traversable stream
   std::stringstream content;
   content << std::cin.rdbuf();
-  std::string input_line;
 
+
+  // Output our content twice
+  std::string line;
   while(content) {
-    getline(content, input_line);
-    std::cout << input_line << std::endl;
+    getline(content, line);
+    std::cout << line << std::endl;
   };
-  content.seekg(0);
+  std::cout << "rewind" << std::endl;
+  content.seekg(100);
   while(content) {
-    getline(content, input_line);
-    std::cout << input_line << std::endl;
+    getline(content, line);
+    std::cout << line << std::endl;
   };
 
+  // Exit our program
   return 0;
 }
