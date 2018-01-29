@@ -17,6 +17,10 @@ int main() {
   // content << std::cin.rdbuf();
 
   FILE *foo = fmemopen(buffer, strlen(buffer), "r");
+  if (foo == NULL) {
+    std::cerr << "Unable to open memory stream";
+    return 1;
+  }
 
   // // Output our content twice
   // std::string line;
