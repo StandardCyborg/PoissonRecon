@@ -3,7 +3,9 @@
 // https://stackoverflow.com/a/17959055
 // http://cpp.indi.frih.net/blog/2014/09/how-to-read-an-entire-file-into-memory-in-cpp/
 // http://pubs.opengroup.org/onlinepubs/9699919799/functions/fmemopen.html
+// http://www.cplusplus.com/reference/cstdio/fread/
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <iostream>
 #include <sstream>
@@ -19,9 +21,20 @@ int main() {
   FILE *foo = fmemopen(buffer, strlen(buffer), "r");
   if (foo == NULL) {
     std::cerr << "Unable to open memory stream";
-    return 1;
+    exit(1);
   }
 
+  // Allocate buffer for ourselfs
+  // TODO: Can we do sizeof buffer
+  char *buffer = (char*) malloc (sizeof(char)*strlen(buffer));
+  if (buffer == NULL) {
+    std::cerr << "Memory error";
+    exit(2);
+  }
+
+  fread(buffer, 1, 5, foo);
+
+  std::cout << buffer;
   // // Output our content twice
   // std::string line;
   // std::cout << "rewind" << content.tellp() << std::endl;
