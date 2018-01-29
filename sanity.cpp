@@ -4,6 +4,7 @@
 // http://cpp.indi.frih.net/blog/2014/09/how-to-read-an-entire-file-into-memory-in-cpp/
 // http://pubs.opengroup.org/onlinepubs/9699919799/functions/fmemopen.html
 // http://www.cplusplus.com/reference/cstdio/fread/
+// http://www.cplusplus.com/reference/cstdio/fwrite/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,11 +19,14 @@ int main() {
   // std::stringstream content;
   // content << std::cin.rdbuf();
 
-  FILE *foo = fmemopen(buffer, strlen(buffer), "r");
+  FILE *foo = fmemopen(buffer, strlen(buffer), "w+b");
   if (foo == NULL) {
     std::cerr << "Unable to open memory stream";
     exit(1);
   }
+
+  char buffer2[] = { 'x' , 'y' , 'z' };
+  fwrite(buffer2, sizeof(char), sizeof(buffer2), foo);
 
   // Allocate buffer for ourselfs
   // TODO: Can we do sizeof buffer
