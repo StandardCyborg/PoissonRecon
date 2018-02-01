@@ -295,6 +295,8 @@ size_t MemoryFileSystem::fread(void * ptr, size_t size, size_t count, FILE * str
 		iLocation += size;
 	}
 
+	GlobalDrive.m_memoryFileMap[stream->GetName()].iLocation = iLocation;
+
 	return count;
 }
 
