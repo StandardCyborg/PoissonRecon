@@ -1,9 +1,9 @@
 PR_TARGET=PoissonRecon
 SR_TARGET=SSDRecon
 ST_TARGET=SurfaceTrimmer
-PR_SOURCE=CmdLineParser.cpp Factor.cpp Geometry.cpp MarchingCubes.cpp PlyFile.cpp PoissonRecon.cpp
-SR_SOURCE=CmdLineParser.cpp Factor.cpp Geometry.cpp MarchingCubes.cpp PlyFile.cpp SSDRecon.cpp
-ST_SOURCE=CmdLineParser.cpp Factor.cpp Geometry.cpp MarchingCubes.cpp PlyFile.cpp SurfaceTrimmer.cpp
+PR_SOURCE=CmdLineParser.cpp MemoryFileSystem.cpp Factor.cpp Geometry.cpp MarchingCubes.cpp PlyFile.cpp PoissonRecon.cpp
+SR_SOURCE=CmdLineParser.cpp MemoryFileSystem.cpp Factor.cpp Geometry.cpp MarchingCubes.cpp PlyFile.cpp SSDRecon.cpp
+ST_SOURCE=CmdLineParser.cpp MemoryFileSystem.cpp Factor.cpp Geometry.cpp MarchingCubes.cpp PlyFile.cpp SurfaceTrimmer.cpp
 
 CFLAGS += -fopenmp -Wno-deprecated -Wno-write-strings -std=c++11
 LFLAGS += -lgomp -lstdc++
