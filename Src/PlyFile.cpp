@@ -32,10 +32,10 @@
 		  
 */
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include "Files.h"
 #include "Ply.h"
 
 const char *type_names[] = {
@@ -109,16 +109,16 @@ PlyElement *find_element(PlyFile *, const char *);
 PlyProperty *find_property(PlyElement *, const char *, int *);
 
 /* write to a file the word describing a PLY file data type */
-void write_scalar_type (FILE *, int);
+void write_scalar_type (TFILE *, int);
 
 /* read a line from a file and break it up into separate words */
-char **get_words(FILE *, int *, char **);
-char **old_get_words(FILE *, int *);
+char **get_words(TFILE *, int *, char **);
+char **old_get_words(TFILE *, int *);
 
 /* write an item to a file */
-void write_binary_item(FILE *, int, int, unsigned int, double, int);
-void write_ascii_item(FILE *, int, unsigned int, double, int);
-double old_write_ascii_item(FILE *, char *, int);
+void write_binary_item(TFILE *, int, int, unsigned int, double, int);
+void write_ascii_item(TFILE *, int, unsigned int, double, int);
+double old_write_ascii_item(TFILE *, char *, int);
 
 /* add information to a PLY file descriptor */
 void add_element(PlyFile *, char **);
@@ -140,7 +140,7 @@ double get_item_value(char *, int);
 
 /* get binary or ascii item and store it according to ptr and type */
 void get_ascii_item(char *, int, int *, unsigned int *, double *);
-void get_binary_item(FILE *, int, int, int *, unsigned int *, double *);
+void get_binary_item(TFILE *, int, int, int *, unsigned int *, double *);
 
 /* get a bunch of elements from a file */
 void ascii_get_element(PlyFile *, char *);
@@ -174,7 +174,7 @@ Given a file pointer, get ready to write PLY data to the file.
 ******************************************************************************/
 
 PlyFile *ply_write(
-				   FILE *fp,
+				   TFILE *fp,
 				   int nelems,
 				   const char **elem_names,
 				   int file_type
@@ -247,7 +247,7 @@ PlyFile *ply_open_for_writing(
 {
 	PlyFile *plyfile;
 	char *name;
-	FILE *fp;
+	TFILE *fp;
 	
 	/* tack on the extension .ply, if necessary */
 	
@@ -259,7 +259,7 @@ PlyFile *ply_open_for_writing(
 	
 	/* open the file for writing */
 	
-	fp = fopen (name, "wb");
+	fp = Tfopen (name, "wb");
 	free(name);
 	if (fp == NULL) {
 		return (NULL);
@@ -472,21 +472,21 @@ header should be written to the file.
 void ply_header_complete(PlyFile *plyfile)
 {
 	int i,j;
-	FILE *fp = plyfile->fp;
+	TFILE *fp = plyfile->fp;
 	PlyElement *elem;
 	PlyProperty *prop;
 	
-	fprintf (fp, "ply\n");
+	Tfprintf (fp, "ply\n");
 	
 	switch (plyfile->file_type) {
     case PLY_ASCII:
-		fprintf (fp, "format ascii 1.0\n");
+		Tfprintf (fp, "format ascii 1.0\n");
 		break;
     case PLY_BINARY_BE:
-		fprintf (fp, "format binary_big_endian 1.0\n");
+		Tfprintf (fp, "format binary_big_endian 1.0\n");
 		break;
     case PLY_BINARY_LE:
-		fprintf (fp, "format binary_little_endian 1.0\n");
+		Tfprintf (fp, "format binary_little_endian 1.0\n");
 		break;
     default:
 		fprintf (stderr, "ply_header_complete: bad file type = %d\n",
@@ -497,39 +497,39 @@ void ply_header_complete(PlyFile *plyfile)
 	/* write out the comments */
 	
 	for (i = 0; i < plyfile->num_comments; i++)
-		fprintf (fp, "comment %s\n", plyfile->comments[i]);
+		Tfprintf (fp, "comment %s\n", plyfile->comments[i]);
 	
 	/* write out object information */
 	
 	for (i = 0; i < plyfile->num_obj_info; i++)
-		fprintf (fp, "obj_info %s\n", plyfile->obj_info[i]);
+		Tfprintf (fp, "obj_info %s\n", plyfile->obj_info[i]);
 	
 	/* write out information about each element */
 	
 	for (i = 0; i < plyfile->nelems; i++) {
 		
 		elem = plyfile->elems[i];
-		fprintf (fp, "element %s %d\n", elem->name, elem->num);
+		Tfprintf (fp, "element %s %d\n", elem->name, elem->num);
 		
 		/* write out each property */
 		for (j = 0; j < elem->nprops; j++) {
 			prop = elem->props[j];
 			if (prop->is_list) {
-				fprintf (fp, "property list ");
+				Tfprintf (fp, "property list ");
 				write_scalar_type (fp, prop->count_external);
-				fprintf (fp, " ");
+				Tfprintf (fp, " ");
 				write_scalar_type (fp, prop->external_type);
-				fprintf (fp, " %s\n", prop->name);
+				Tfprintf (fp, " %s\n", prop->name);
 			}
 			else {
-				fprintf (fp, "property ");
+				Tfprintf (fp, "property ");
 				write_scalar_type (fp, prop->external_type);
-				fprintf (fp, " %s\n", prop->name);
+				Tfprintf (fp, " %s\n", prop->name);
 			}
 		}
 	}
 	
-	fprintf (fp, "end_header\n");
+	Tfprintf (fp, "end_header\n");
 }
 
 
@@ -569,7 +569,7 @@ ply_put_element_setup().
 void ply_put_element(PlyFile *plyfile, void *elem_ptr)
 {
 	int j,k;
-	FILE *fp = plyfile->fp;
+	TFILE *fp = plyfile->fp;
 	PlyElement *elem;
 	PlyProperty *prop;
 	char *elem_data,*item;
@@ -625,7 +625,7 @@ void ply_put_element(PlyFile *plyfile, void *elem_ptr)
 			}
 		}
 		
-		fprintf (fp, "\n");
+		Tfprintf (fp, "\n");
 	}
 	else {
 		
@@ -741,7 +741,7 @@ Specify a comment that will be written in the header.
    returns a pointer to a PlyFile, used to refer to this file, or NULL if error
  ******************************************************************************/
  
- PlyFile *ply_read(FILE *fp, int *nelems, char ***elem_names)
+ PlyFile *ply_read(TFILE *fp, int *nelems, char ***elem_names)
  {
 	 int i,j;
 	 PlyFile *plyfile;
@@ -865,7 +865,7 @@ Open a polygon file for reading.
 	  float *version
 	  )
   {
-	  FILE *fp;
+	  TFILE *fp;
 	  PlyFile *plyfile;
 	  char *name;
 	  
@@ -879,7 +879,7 @@ Open a polygon file for reading.
 	  
 	  /* open the file for reading */
 	  
-	  fp = fopen (name, "rb");
+	  fp = Tfopen (name, "rb");
 	  free(name);
 	  if (fp == NULL)
 		  return (NULL);
@@ -1424,7 +1424,7 @@ Open a polygon file for reading.
   
   void ply_close(PlyFile *plyfile)
   {
-	  fclose (plyfile->fp);
+	  Tfclose (plyfile->fp);
 	  
 	  /* free up memory associated with the PLY file */
 	  free (plyfile);
@@ -1654,7 +1654,7 @@ Read an element from a binary file.
 	 int j,k;
 	 PlyElement *elem;
 	 PlyProperty *prop;
-	 FILE *fp = plyfile->fp;
+	 TFILE *fp = plyfile->fp;
 	 char *elem_data,*item=NULL;
 	 char *item_ptr;
 	 int item_size;
@@ -1756,7 +1756,7 @@ Read an element from a binary file.
   code - code for type
   ******************************************************************************/
   
-  void write_scalar_type (FILE *fp, int code)
+  void write_scalar_type (TFILE *fp, int code)
   {
 	  /* make sure this is a valid code */
 	  
@@ -1767,7 +1767,7 @@ Read an element from a binary file.
 	  
 	  /* write the code to a file */
 	  
-	  fprintf (fp, "%s", type_names[code]);
+	  Tfprintf (fp, "%s", type_names[code]);
   }
   
   /******************************************************************************
@@ -1859,7 +1859,7 @@ Read an element from a binary file.
 	 returns a list of words from the line, or NULL if end-of-file
   ******************************************************************************/
   
-  char **get_words(FILE *fp, int *nwords, char **orig_line)
+  char **get_words(TFILE *fp, int *nwords, char **orig_line)
   {
 #define BIG_STRING 4096
 	  static char str[BIG_STRING];
@@ -1873,7 +1873,7 @@ Read an element from a binary file.
 	  words = (char **) myalloc (sizeof (char *) * max_words);
 	  
 	  /* read in a line */
-	  result = fgets (str, BIG_STRING, fp);
+	  result = Tfgets (str, BIG_STRING, fp);
 	  if (result == NULL) {
 	     free(words);
 		  *nwords = 0;
@@ -2021,7 +2021,7 @@ Read an element from a binary file.
   ******************************************************************************/
   
   void write_binary_item(
-	  FILE *fp,
+	  TFILE *fp,
 	  int file_type,
 	  int int_val,
 	  unsigned int uint_val,
@@ -2083,7 +2083,7 @@ Read an element from a binary file.
 	  if ((file_type != native_binary_type) && (ply_type_size[type] > 1))
 		  swap_bytes((char *)value, ply_type_size[type]);
 	  
-	  if (fwrite (value, ply_type_size[type], 1, fp) != 1)
+	  if (Tfwrite (value, ply_type_size[type], 1, fp) != 1)
 	  {
 		  fprintf(stderr, "PLY ERROR: fwrite() failed -- aborting.\n");
 		  exit(1);
@@ -2103,7 +2103,7 @@ Read an element from a binary file.
   ******************************************************************************/
   
   void write_ascii_item(
-	  FILE *fp,
+	  TFILE *fp,
 	  int int_val,
 	  unsigned int uint_val,
 	  double double_val,
@@ -2117,7 +2117,7 @@ Read an element from a binary file.
 	  case PLY_INT_16:
 	  case PLY_INT:
 	  case PLY_INT_32:
-		  if (fprintf (fp, "%d ", int_val) <= 0)
+		  if (Tfprintf (fp, "%d ", int_val) <= 0)
 		  {
 			  fprintf(stderr, "PLY ERROR: fprintf() failed -- aborting.\n");
 			  exit(1);
@@ -2130,7 +2130,7 @@ Read an element from a binary file.
 	  case PLY_UINT:
 	  case PLY_UINT_32:
 
-		  if (fprintf (fp, "%u ", uint_val) <= 0)
+		  if (Tfprintf (fp, "%u ", uint_val) <= 0)
 		  {
 			  fprintf(stderr, "PLY ERROR: fprintf() failed -- aborting.\n");
 			  exit(1);
@@ -2140,7 +2140,7 @@ Read an element from a binary file.
 	  case PLY_FLOAT_32:
 	  case PLY_DOUBLE:
 	  case PLY_FLOAT_64:
-	  if (fprintf (fp, "%g ", double_val) <= 0)
+	  if (Tfprintf (fp, "%g ", double_val) <= 0)
 		  {
 			  fprintf(stderr, "PLY ERROR: fprintf() failed -- aborting.\n");
 			  exit(1);
@@ -2165,7 +2165,7 @@ Read an element from a binary file.
 	returns a double-precision float that contains the value of the written item
   ******************************************************************************/
   
-  double old_write_ascii_item(FILE *fp, char *item, int type)
+  double old_write_ascii_item(TFILE *fp, char *item, int type)
   {
 	  unsigned char *puchar;
 	  char *pchar;
@@ -2184,49 +2184,49 @@ Read an element from a binary file.
 	  case PLY_INT_8:
 		  pchar = (char *) item;
 		  int_value = *pchar;
-		  fprintf (fp, "%d ", int_value);
+		  Tfprintf (fp, "%d ", int_value);
 		  return ((double) int_value);
 	  case PLY_UCHAR:
 	  case PLY_UINT_8:
 		  puchar = (unsigned char *) item;
 		  int_value = *puchar;
-		  fprintf (fp, "%d ", int_value);
+		  Tfprintf (fp, "%d ", int_value);
 		  return ((double) int_value);
 	  case PLY_SHORT:
 	  case PLY_INT_16:
 		  pshort = (short int *) item;
 		  int_value = *pshort;
-		  fprintf (fp, "%d ", int_value);
+		  Tfprintf (fp, "%d ", int_value);
 		  return ((double) int_value);
 	  case PLY_USHORT:
 	  case PLY_UINT_16:
 		  pushort = (unsigned short int *) item;
 		  int_value = *pushort;
-		  fprintf (fp, "%d ", int_value);
+		  Tfprintf (fp, "%d ", int_value);
 		  return ((double) int_value);
 	  case PLY_INT:
 	  case PLY_INT_32:
 		  pint = (int *) item;
 		  int_value = *pint;
-		  fprintf (fp, "%d ", int_value);
+		  Tfprintf (fp, "%d ", int_value);
 		  return ((double) int_value);
 	  case PLY_UINT:
 	  case PLY_UINT_32:
 		  puint = (unsigned int *) item;
 		  uint_value = *puint;
-		  fprintf (fp, "%u ", uint_value);
+		  Tfprintf (fp, "%u ", uint_value);
 		  return ((double) uint_value);
 	  case PLY_FLOAT:
 	  case PLY_FLOAT_32:
 		  pfloat = (float *) item;
 		  double_value = *pfloat;
-		  fprintf (fp, "%g ", double_value);
+		  Tfprintf (fp, "%g ", double_value);
 		  return (double_value);
 	  case PLY_DOUBLE:
 	  case PLY_FLOAT_64:
 		  pdouble = (double *) item;
 		  double_value = *pdouble;
-		  fprintf (fp, "%g ", double_value);
+		  Tfprintf (fp, "%g ", double_value);
 		  return (double_value);
 	  default:
 		  fprintf (stderr, "old_write_ascii_item: bad type = %d\n", type);
@@ -2328,7 +2328,7 @@ Read an element from a binary file.
   ******************************************************************************/
   
   void get_binary_item(
-	  FILE *fp,
+	  TFILE *fp,
 	  int file_type,
 	  int type,
 	  int *int_val,
@@ -2341,7 +2341,7 @@ Read an element from a binary file.
 	  
 	  ptr = (void *) c;
 	  
-	  if (fread (ptr, ply_type_size[type], 1, fp) != 1)
+	  if (Tfread (ptr, ply_type_size[type], 1, fp) != 1)
 	  {
 		  fprintf(stderr, "PLY ERROR: fread() failed -- aborting.\n");
 		  exit(1);

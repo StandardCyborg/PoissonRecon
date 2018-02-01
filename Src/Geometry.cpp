@@ -46,14 +46,14 @@ BufferedReadWriteFile::BufferedReadWriteFile( const char* fileName , const char*
 {
 	_bufferIndex = 0;
 	_bufferSize = bufferSize;
-	if( fileName ) strcpy( _fileName , fileName ) , tempFile = false , _fp = fopen( _fileName , "w+b" );
+	if( fileName ) strcpy( _fileName , fileName ) , tempFile = false , _fp = Tfopen( _fileName , "w+b" );
 	else
 	{
 		if( fileHeader && strlen(fileHeader) ) sprintf( _fileName , "%sXXXXXX" , fileHeader );
 		else strcpy( _fileName , "XXXXXX" );
 #ifdef _WIN32
 		_mktemp( _fileName );
-		_fp = fopen( _fileName , "w+b" );
+		_fp = Tfopen( _fileName , "w+b" );
 #else // !_WIN32
 		_fp = fdopen( mkstemp( _fileName ) , "w+b" );
 #endif // _WIN32
@@ -65,16 +65,16 @@ BufferedReadWriteFile::BufferedReadWriteFile( const char* fileName , const char*
 BufferedReadWriteFile::~BufferedReadWriteFile( void )
 {
 	free( _buffer );
-	fclose( _fp );
+	Tfclose( _fp );
 	if( tempFile ) remove( _fileName );
 }
 void BufferedReadWriteFile::reset( void )
 {
-	if( _bufferIndex ) fwrite( _buffer , 1 , _bufferIndex , _fp );
+	if( _bufferIndex ) Tfwrite( _buffer , 1 , _bufferIndex , _fp );
 	_bufferIndex = 0;
-	fseek( _fp , 0 , SEEK_SET );
+	Tfseek( _fp , 0 , SEEK_SET );
 	_bufferIndex = 0;
-	_bufferSize = fread( _buffer , 1 , _bufferSize , _fp );
+	_bufferSize = Tfread( _buffer , 1 , _bufferSize , _fp );
 }
 bool BufferedReadWriteFile::write( const void* data , size_t size )
 {
@@ -84,7 +84,7 @@ bool BufferedReadWriteFile::write( const void* data , size_t size )
 	while( sz<=size )
 	{
 		memcpy( _buffer+_bufferIndex , _data , sz );
-		fwrite( _buffer , 1 , _bufferSize , _fp );
+		Tfwrite( _buffer , 1 , _bufferSize , _fp );
 		_data += sz;
 		size -= sz;
 		_bufferIndex = 0;
@@ -106,7 +106,7 @@ bool BufferedReadWriteFile::read( void* data , size_t size )
 	{
 		if( size && !_bufferSize ) return false;
 		memcpy( _data , _buffer+_bufferIndex , sz );
-		_bufferSize = fread( _buffer , 1 , _bufferSize , _fp );
+		_bufferSize = Tfread( _buffer , 1 , _bufferSize , _fp );
 		_data += sz;
 		size -= sz;
 		_bufferIndex = 0;

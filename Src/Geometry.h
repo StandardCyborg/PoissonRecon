@@ -29,11 +29,12 @@ DAMAGE.
 #ifndef GEOMETRY_INCLUDED
 #define GEOMETRY_INCLUDED
 
-#include <stdio.h>
 #include <math.h>
 #include <vector>
 #include <stdlib.h>
 #include <unordered_map>
+
+#include "Files.h"
 
 template<class Real>
 Real Random(void);
@@ -376,7 +377,7 @@ public:
 class BufferedReadWriteFile
 {
 	bool tempFile;
-	FILE* _fp;
+	TFILE* _fp;
 	char *_buffer , _fileName[1024];
 	size_t _bufferIndex , _bufferSize;
 public:

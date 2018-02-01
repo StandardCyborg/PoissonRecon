@@ -44,9 +44,10 @@ extern "C" {
 #endif
 	
 #include <stdlib.h>
-#include <stdio.h>
 #include <stddef.h>
 #include <string.h>
+
+#include "Files.h"
     
 #define PLY_ASCII         1      /* ascii PLY file */
 #define PLY_BINARY_BE     2      /* binary PLY file, big endian */
@@ -132,7 +133,7 @@ typedef struct PlyOtherElems {  /* "other" elements, not interpreted by user */
 } PlyOtherElems;
 
 typedef struct PlyFile {        /* description of PLY file */
-	FILE *fp;                     /* file pointer */
+	TFILE *fp;                     /* file pointer */
 	int file_type;                /* ascii or binary */
 	float version;                /* version number of file */
 	int nelems;                   /* number of elements of object */
@@ -187,7 +188,7 @@ extern char *my_alloc();
 
 /*** delcaration of routines ***/
 
-extern PlyFile *ply_write(FILE *, int, const char **, int);
+extern PlyFile *ply_write(TFILE *, int, const char **, int);
 extern PlyFile *ply_open_for_writing(char *, int, const char **, int, float *);
 extern void ply_describe_element(PlyFile *, char *, int, int, PlyProperty *);
 extern void ply_describe_property(PlyFile *, const char *, PlyProperty *);
@@ -197,7 +198,7 @@ extern void ply_put_element_setup(PlyFile *, const char *);
 extern void ply_put_element(PlyFile *, void *);
 extern void ply_put_comment(PlyFile *, char *);
 extern void ply_put_obj_info(PlyFile *, char *);
-extern PlyFile *ply_read(FILE *, int *, char ***);
+extern PlyFile *ply_read(TFILE *, int *, char ***);
 extern PlyFile *ply_open_for_reading( char *, int *, char ***, int *, float *);
 extern PlyProperty **ply_get_element_description(PlyFile *, char *, int*, int*);
 extern void ply_get_element_setup( PlyFile *, char *, int, PlyProperty *);
