@@ -1,6 +1,8 @@
 #ifndef FILES_INCLUDED
 #define FILES_INCLUDED
 
+#define USE_MEMORY_FILE_SYSTEM
+
 #ifdef USE_MEMORY_FILE_SYSTEM
 
 #include "MemoryFileSystem.h"
@@ -11,8 +13,10 @@
 #define Tfread MemoryFileSystem::fread
 #define Tfwrite MemoryFileSystem::fwrite
 #define Tfseek MemoryFileSystem::fseek
+#define Tftell MemoryFileSystem::ftell
 #define Tfprintf MemoryFileSystem::fprintf
 #define Tfgets MemoryFileSystem::fgets
+#define Tmktemp MemoryFileSystem::_mktemp
 
 #else
 
@@ -24,8 +28,10 @@
 #define Tfread fread
 #define Tfwrite fwrite
 #define Tfseek fseek
+#define Tftell ftell
 #define Tfprintf fprintf
 #define Tfgets fgets
+#define Tmktemp _mktemp
 
 #endif // USE_MEMORY_FILE_SYSTEM
 

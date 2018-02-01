@@ -48,6 +48,8 @@ namespace MemoryFileSystem
 			// will allocate memory for a virtual file or realloc if there is already a memory block
 			unsigned char *ReAllocBuffer(unsigned char *, size_t size, size_t new_size);
 
+			bool HasFile(const char *filename);
+
 			int CloseFile(FILE *fp);
 
 			// this is used to keep track of the files and to make sure we don't have any memory leaks
@@ -69,9 +71,15 @@ namespace MemoryFileSystem
 
 	int fseek(FILE * stream, long int offset, int origin);
 
+	int ftell(FILE * stream);
+
 	int fprintf(FILE * stream, const char * format, ...);
 
 	char * fgets(char * str, int num, FILE * stream);
+	
+	char *_mktemp(char *);
+
+	void WriteFileInMemoryToDisc(const char *filename);
 };
 
 #endif

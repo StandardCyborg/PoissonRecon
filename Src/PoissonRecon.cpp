@@ -31,7 +31,6 @@ DAMAGE.
 #define BRUNO_LEVY_FIX
 #define FOR_RELEASE
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <float.h>
@@ -677,6 +676,11 @@ int _Execute( int argc , char* argv[] )
 			if( ASCII.set ) PlyWritePolygons( Out.value , &mesh , PLY_ASCII         , &comments[0] , (int)comments.size() , iXForm );
 			else            PlyWritePolygons( Out.value , &mesh , PLY_BINARY_NATIVE , &comments[0] , (int)comments.size() , iXForm );
 		}
+
+#ifdef USE_MEMORY_FILE_SYSTEM
+		MemoryFileSystem::WriteFileInMemoryToDisc(Out.value);
+#endif
+
 	}
 	if( density ) delete density , density = NULL;
 	DumpOutput2( comments , "#          Total Solve: %9.1f (s), %9.1f (MB)\n" , Time()-startTime , tree.maxMemoryUsage() );

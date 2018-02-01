@@ -52,7 +52,7 @@ BufferedReadWriteFile::BufferedReadWriteFile( const char* fileName , const char*
 		if( fileHeader && strlen(fileHeader) ) sprintf( _fileName , "%sXXXXXX" , fileHeader );
 		else strcpy( _fileName , "XXXXXX" );
 #ifdef _WIN32
-		_mktemp( _fileName );
+		Tmktemp( _fileName );
 		_fp = Tfopen( _fileName , "w+b" );
 #else // !_WIN32
 		_fp = fdopen( mkstemp( _fileName ) , "w+b" );

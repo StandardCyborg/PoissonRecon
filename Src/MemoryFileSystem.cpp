@@ -1,8 +1,16 @@
 #include <map>
+#include <stdarg.h>
 
 #include "MemoryFileSystem.h"
 
 using namespace std;
+
+namespace MemoryFileSystem
+{
+	int GetSizeNeeded(const char * format, va_list args);
+
+	int tempCount = 0;
+};
 
 // This is global so it will be created when the program starts and auto-deleted when it exits freeing memory
 MemoryFileSystem::MemoryFileDrive GlobalDrive;
@@ -48,6 +56,13 @@ MemoryFileSystem::MemoryFileDrive::~MemoryFileDrive()
 {
 }
 
+bool MemoryFileSystem::MemoryFileDrive::HasFile(const char *filename)
+{
+	std::string FileName(filename);
+
+	return m_memoryFileMap.count(FileName) > 0;
+}
+
 MemoryFileSystem::FILE *MemoryFileSystem::MemoryFileDrive::CreateVirtualFile(const char *filename, const char *mode)
 {
 	std::string FileName(filename);
@@ -64,7 +79,7 @@ MemoryFileSystem::FILE *MemoryFileSystem::MemoryFileDrive::CreateVirtualFile(con
 	}
 
 	// reading so file must exist
-	if (Mode.find('r') >= 0)
+	if (Mode.find('r') != string::npos)
 	{
 		if (m_memoryFileMap.count(FileName) > 0)
 		{
@@ -107,7 +122,7 @@ MemoryFileSystem::FILE *MemoryFileSystem::MemoryFileDrive::CreateVirtualFile(con
 		}
 	}
 	// writing, overwrite if exist
-	else if (Mode.find('w') >= 0)
+	else if (Mode.find('w') != string::npos)
 	{
 		if (m_memoryFileMap.count(FileName) > 0)
 		{
@@ -117,7 +132,7 @@ MemoryFileSystem::FILE *MemoryFileSystem::MemoryFileDrive::CreateVirtualFile(con
 		}
 		else
 		{
-			if (Mode.find('x') >= 0) return NULL; // 'x' means fail if file doesn't exist
+			if (Mode.find('x') != string::npos) return NULL; // 'x' means fail if file doesn't exist
 
 			CreateNewInternalFile(FileName);
 		}
@@ -125,7 +140,7 @@ MemoryFileSystem::FILE *MemoryFileSystem::MemoryFileDrive::CreateVirtualFile(con
 		m_memoryFileMap[FileName].Writing = true;
 	}
 	// append, create if it doesn't exist
-	else if (Mode.find('a') >= 0)
+	else if (Mode.find('a') != string::npos)
 	{
 		if (m_memoryFileMap.count(FileName) > 0)
 		{
@@ -146,14 +161,14 @@ MemoryFileSystem::FILE *MemoryFileSystem::MemoryFileDrive::CreateVirtualFile(con
 	}
 
 	// should this be read/write
-	if (Mode.find('+') >= 0)
+	if (Mode.find('+') != string::npos)
 	{
 		m_memoryFileMap[FileName].Writing = true;
 		m_memoryFileMap[FileName].Reading = true;
 	}
 
 	// binary
-	if (Mode.find('b') >= 0)
+	if (Mode.find('b') != string::npos)
 	{
 		m_memoryFileMap[FileName].Binary = true;
 	}
@@ -190,6 +205,8 @@ unsigned char *MemoryFileSystem::MemoryFileDrive::ReAllocBuffer(unsigned char *b
 	}
 
 	delete [] buffer;
+
+	return new_buffer;
 }
 
 int MemoryFileSystem::MemoryFileDrive::CloseFile(FILE *fp)
@@ -281,6 +298,11 @@ size_t MemoryFileSystem::fread(void * ptr, size_t size, size_t count, FILE * str
 	return count;
 }
 
+int MemoryFileSystem::ftell(FILE *stream)
+{
+	return GlobalDrive.m_memoryFileMap[stream->GetName()].iLocation;
+}
+
 int MemoryFileSystem::fseek(FILE * stream, long int offset, int origin)
 {
 	size_t iLocation = GlobalDrive.m_memoryFileMap[stream->GetName()].iLocation;
@@ -301,12 +323,123 @@ int MemoryFileSystem::fseek(FILE * stream, long int offset, int origin)
 
 int MemoryFileSystem::fprintf(MemoryFileSystem::FILE * stream, const char * format, ...)
 {
-	return 0;
+	va_list args;
+
+	// get the amount of space needed
+	va_start(args, format);
+	int space_needed = GetSizeNeeded(format, args);
+	va_end(args);
+
+	// write to the file
+	unsigned char *buffer = GlobalDrive.m_memoryFileMap[stream->GetName()].buffer;
+	size_t iBufferSize = GlobalDrive.m_memoryFileMap[stream->GetName()].iBufferSize;
+	size_t iLocation = GlobalDrive.m_memoryFileMap[stream->GetName()].iLocation;
+	size_t iFileSize = GlobalDrive.m_memoryFileMap[stream->GetName()].iFileSize;
+
+	if (iLocation + space_needed > iBufferSize)
+	{
+		int extra_needed = ((iLocation + space_needed) - iBufferSize) + MemoryFileDrive::defaultbufferSize;
+
+		buffer = GlobalDrive.ReAllocBuffer(buffer, iBufferSize, iBufferSize + extra_needed);
+		iBufferSize += extra_needed;
+	}
+
+	va_start(args, format);
+
+	char *startLocation = (char *)&buffer[iLocation];
+
+	int count = vsnprintf(startLocation, iBufferSize - iLocation, format, args);
+	iLocation += count;
+
+	if (iFileSize < iLocation) iFileSize = iLocation;
+	
+	va_end(args);
+
+	GlobalDrive.m_memoryFileMap[stream->GetName()].buffer = buffer;
+	GlobalDrive.m_memoryFileMap[stream->GetName()].iBufferSize = iBufferSize;
+	GlobalDrive.m_memoryFileMap[stream->GetName()].iLocation = iLocation;
+	GlobalDrive.m_memoryFileMap[stream->GetName()].iFileSize = iFileSize;
+
+	return count;
 }
 
 char * MemoryFileSystem::fgets(char * str, int num, FILE * stream)
 {
-	return NULL;
+	unsigned char *buffer = GlobalDrive.m_memoryFileMap[stream->GetName()].buffer;
+	size_t iBufferSize = GlobalDrive.m_memoryFileMap[stream->GetName()].iBufferSize;
+	size_t iLocation = GlobalDrive.m_memoryFileMap[stream->GetName()].iLocation;
+	size_t iFileSize = GlobalDrive.m_memoryFileMap[stream->GetName()].iFileSize;
+
+	int characters_left = iFileSize - iLocation;
+
+	if (characters_left <= 0) return NULL; // end of file
+
+	char *src = (char *)&buffer[iLocation];
+	char *dest = str;
+
+	--num; // decrement to account for the '\0'
+	int count = num < characters_left ? num : characters_left;
+	int numread = 0;
+
+	for (int i = 0; i < count; ++i)
+	{
+		int c = *src++;
+
+		*dest++ = c;
+		++numread;
+
+		if (c == '\n') break;
+	}
+
+	str[numread] = '\0';
+
+	iLocation += numread;
+
+	GlobalDrive.m_memoryFileMap[stream->GetName()].iLocation = iLocation;
+
+	return str;
+}
+
+char *MemoryFileSystem::_mktemp(char *_template)
+{
+	char buffer[32];
+
+	sprintf(buffer, "%i", tempCount++);
+
+	strcat(_template, buffer);
+
+	return _template;
+}
+
+// this is temporary, hence the poor implementation
+void MemoryFileSystem::WriteFileInMemoryToDisc(const char *filename)
+{
+	::FILE *fp = ::fopen(filename, "wb");
+
+	char buffer[4];
+
+	if (GlobalDrive.HasFile(filename) && fp != NULL)
+	{
+		FILE *memfile = fopen(filename, "rb");
+
+		fseek(memfile, 0, SEEK_END);
+		int size = ftell(memfile);
+		fseek(memfile, 0, SEEK_SET);
+
+		for (int i = 0; i < size; ++i)
+		{
+			MemoryFileSystem::fread(buffer, 1, 1, memfile);
+
+			::fwrite(buffer, 1, 1, fp);
+		}
+	}
+}
+
+int MemoryFileSystem::GetSizeNeeded(const char * format, va_list args)
+{
+	char smallbuffer[32]; // use a buffer we know will be too small
+
+	return vsnprintf(smallbuffer, 31, format, args);
 }
 
 // ----------------------------------------------------
