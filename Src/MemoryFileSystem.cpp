@@ -1,5 +1,6 @@
 #include <map>
 #include <stdarg.h>
+#include <string.h>
 
 #include "MemoryFileSystem.h"
 
