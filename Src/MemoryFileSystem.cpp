@@ -1,6 +1,14 @@
 #include <map>
 #include <stdarg.h>
 #include <string.h>
+#include <stdio.h>
+#include <io.h>
+
+#if !defined(WIN32)
+#include <unistd.h>
+#else
+#include <Fcntl.h>
+#endif
 
 #include "MemoryFileSystem.h"
 
@@ -403,8 +411,7 @@ char * MemoryFileSystem::fgets(char * str, int num, FILE * stream)
 	return str;
 }
 
-char *MemoryFileSystem::_mktemp(char *_template)
-{
+char *MemoryFileSystem::_mktemp(char *_template){
 	char buffer[32];
 
 	sprintf(buffer, "%i", tempCount++);
@@ -419,24 +426,55 @@ void MemoryFileSystem::WriteFileInMemoryToDisc(const char *filename)
 {
 	::FILE *fp = ::fopen(filename, "wb");
 
-	char buffer[4];
-
 	if (GlobalDrive.HasFile(filename) && fp != NULL)
 	{
-		FILE *memfile = fopen(filename, "rb");
+		unsigned char *buffer = GlobalDrive.m_memoryFileMap[filename].buffer;
+		size_t iBufferSize = GlobalDrive.m_memoryFileMap[filename].iBufferSize;
+		size_t iLocation = GlobalDrive.m_memoryFileMap[filename].iLocation;
+		size_t iFileSize = GlobalDrive.m_memoryFileMap[filename].iFileSize;
 
-		fseek(memfile, 0, SEEK_END);
-		int size = ftell(memfile);
-		fseek(memfile, 0, SEEK_SET);
+		unsigned char *c = buffer;
 
-		for (int i = 0; i < size; ++i)
-		{
-			MemoryFileSystem::fread(buffer, 1, 1, memfile);
+		::fwrite(c, 1, iFileSize, fp);
+	}
 
-			::fwrite(buffer, 1, 1, fp);
-		}
+	::fclose(fp);
+}
+
+// this is temporary, hence the poor implementation
+void MemoryFileSystem::WriteFileInMemoryToStdout(const char *filename)
+{
+#if defined(WIN32)
+	setmode(fileno(stdout), O_BINARY);
+#endif
+
+	// so we can use stdout like a file
+	//::FILE *const fp = _fdopen(_dup(fileno(stdout)), "wb");
+
+	const int block_size = 128;
+
+	if (GlobalDrive.HasFile(filename))
+	{
+		unsigned char *buffer = GlobalDrive.m_memoryFileMap[filename].buffer;
+		size_t iBufferSize = GlobalDrive.m_memoryFileMap[filename].iBufferSize;
+		size_t iLocation = GlobalDrive.m_memoryFileMap[filename].iLocation;
+		size_t iFileSize = GlobalDrive.m_memoryFileMap[filename].iFileSize;
+
+		unsigned char *c = buffer;
+
+		//for (int i = 0; i < iFileSize; ++i)
+		//{
+		//	putchar(*c++);
+		//}
+
+		//putchar(0);
+
+		::fwrite(c, 1, iFileSize, stdout);
+
+		fflush(stdout);
 	}
 }
+
 
 int MemoryFileSystem::GetSizeNeeded(const char * format, va_list args)
 {

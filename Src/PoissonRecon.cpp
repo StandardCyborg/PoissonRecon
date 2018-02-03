@@ -31,7 +31,9 @@ DAMAGE.
 #define BRUNO_LEVY_FIX
 #define FOR_RELEASE
 
+#include <iostream>
 #include <stdlib.h>
+#include <stdio.h>
 #include <math.h>
 #include <float.h>
 #if defined( _WIN32 ) || defined( _WIN64 )
@@ -46,6 +48,7 @@ DAMAGE.
 #include "PPolynomial.h"
 #include "Ply.h"
 #include "MemoryUsage.h"
+#include "MemoryFileSystem.h"
 #ifdef _OPENMP
 #include "omp.h"
 #endif // _OPENMP
@@ -142,6 +145,7 @@ cmdLineInt
 	Degree( "degree" , 2 ) ,
 #endif // !FAST_COMPILE
 	Depth( "depth" , 8 ) ,
+	STDINOUT("stdin"),
 	CGDepth( "cgDepth" , 0 ) ,
 	KernelDepth( "kernelDepth" ) ,
 	AdaptiveExponent( "adaptiveExp" , 1 ) ,
@@ -170,7 +174,7 @@ cmdLineReadable* params[] =
 #endif // !FAST_COMPILE
 	&In , &Depth , &Out , &XForm ,
 	&Scale , &Verbose , &CGSolverAccuracy , &NoComments , &LowResIterMultiplier ,
-	&KernelDepth , &SamplesPerNode , &Confidence , &NormalWeights , &NonManifold , &PolygonMesh , &ASCII , &ShowResidual , &VoxelDepth ,
+	&KernelDepth , &SamplesPerNode , &Confidence , &NormalWeights , &NonManifold , &PolygonMesh , &ASCII , &STDINOUT, &ShowResidual , &VoxelDepth ,
 	&PointWeight , &VoxelGrid , &Threads , &MaxSolveDepth ,
 	&AdaptiveExponent ,
 	&Density ,
@@ -443,6 +447,36 @@ int _Execute( int argc , char* argv[] )
 	Octree< Real > tree;
 	OctreeProfiler< Real > profiler( tree );
 	tree.threads = Threads.value;
+
+	if (STDINOUT.set)
+	{
+		In.value = "inputfile.ply"; // used internally. no file actually created
+		In.set = true;
+
+		Out.value = "outputfile.ply"; // used internally. no file actually created
+		Out.set = true;
+
+		// read from stdin
+		MemoryFileSystem::FILE *inputFile = MemoryFileSystem::fopen(In.value, "wb");
+		
+		if (NULL != inputFile)
+		{
+			char c;
+
+			while ((c = getchar())!= 0)
+			{
+				char s = c;
+				MemoryFileSystem::fwrite(&s, 1, 1, inputFile);
+			}
+
+			MemoryFileSystem::fclose(inputFile);
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
 	if( !In.set )
 	{
 		ShowUsage( argv[0] );
@@ -678,7 +712,14 @@ int _Execute( int argc , char* argv[] )
 		}
 
 #ifdef USE_MEMORY_FILE_SYSTEM
-		MemoryFileSystem::WriteFileInMemoryToDisc(Out.value);
+		//if (STDINOUT.set)
+		{
+			MemoryFileSystem::WriteFileInMemoryToStdout(Out.value);
+		}
+		//else
+		{
+			MemoryFileSystem::WriteFileInMemoryToDisc(Out.value);
+		}
 #endif
 
 	}
@@ -765,6 +806,7 @@ int main( int argc , char* argv[] )
 	double t = Time();
 
 	cmdLineParse( argc-1 , &argv[1] , sizeof(params)/sizeof(cmdLineReadable*) , params , 1 );
+
 #ifdef FAST_COMPILE
 	static const int Degree = 2;
 	static const BoundaryType BType = BOUNDARY_NEUMANN;
