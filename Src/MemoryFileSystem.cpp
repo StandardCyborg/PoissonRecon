@@ -51,7 +51,6 @@ MemoryFileSystem::InternalFILE::InternalFILE()
 MemoryFileSystem::InternalFILE::~InternalFILE()
 {
 	if (NULL != buffer) delete[] buffer;
-	if (NULL != fp) delete fp;
 }
 
 // ------------------------------------------------------------------

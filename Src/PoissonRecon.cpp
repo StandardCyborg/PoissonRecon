@@ -132,6 +132,8 @@ cmdLineReadable
 	NormalWeights( "nWeights" ) ,
 	NonManifold( "nonManifold" ) ,
 	ASCII( "ascii" ) ,
+	STDIN("stdin"),
+	STDOUT("stdout"),
 	Density( "density" ) ,
 	LinearFit( "linearFit" ) ,
 	PrimalVoxel( "primalVoxel" ) ,
@@ -145,7 +147,6 @@ cmdLineInt
 	Degree( "degree" , 2 ) ,
 #endif // !FAST_COMPILE
 	Depth( "depth" , 8 ) ,
-	STDINOUT("stdin"),
 	CGDepth( "cgDepth" , 0 ) ,
 	KernelDepth( "kernelDepth" ) ,
 	AdaptiveExponent( "adaptiveExp" , 1 ) ,
@@ -174,7 +175,7 @@ cmdLineReadable* params[] =
 #endif // !FAST_COMPILE
 	&In , &Depth , &Out , &XForm ,
 	&Scale , &Verbose , &CGSolverAccuracy , &NoComments , &LowResIterMultiplier ,
-	&KernelDepth , &SamplesPerNode , &Confidence , &NormalWeights , &NonManifold , &PolygonMesh , &ASCII , &STDINOUT, &ShowResidual , &VoxelDepth ,
+	&KernelDepth , &SamplesPerNode , &Confidence , &NormalWeights , &NonManifold , &PolygonMesh , &ASCII , &STDIN, &STDOUT, &ShowResidual , &VoxelDepth ,
 	&PointWeight , &VoxelGrid , &Threads , &MaxSolveDepth ,
 	&AdaptiveExponent ,
 	&Density ,
@@ -448,13 +449,10 @@ int _Execute( int argc , char* argv[] )
 	OctreeProfiler< Real > profiler( tree );
 	tree.threads = Threads.value;
 
-	if (STDINOUT.set)
+	if (STDIN.set)
 	{
 		In.value = "inputfile.ply"; // used internally. no file actually created
 		In.set = true;
-
-		Out.value = "outputfile.ply"; // used internally. no file actually created
-		Out.set = true;
 
 		// read from stdin
 		MemoryFileSystem::FILE *inputFile = MemoryFileSystem::fopen(In.value, "wb");
@@ -475,6 +473,12 @@ int _Execute( int argc , char* argv[] )
 		{
 			return 0;
 		}
+	}
+
+	if (STDOUT.set)
+	{
+		Out.value = "outputfile.ply"; // used internally. no file actually created
+		Out.set = true;
 	}
 
 	if( !In.set )
@@ -711,16 +715,14 @@ int _Execute( int argc , char* argv[] )
 			else            PlyWritePolygons( Out.value , &mesh , PLY_BINARY_NATIVE , &comments[0] , (int)comments.size() , iXForm );
 		}
 
-#ifdef USE_MEMORY_FILE_SYSTEM
-		//if (STDINOUT.set)
+		if (STDOUT.set)
 		{
 			MemoryFileSystem::WriteFileInMemoryToStdout(Out.value);
 		}
-		//else
+		else
 		{
 			MemoryFileSystem::WriteFileInMemoryToDisc(Out.value);
 		}
-#endif
 
 	}
 	if( density ) delete density , density = NULL;
