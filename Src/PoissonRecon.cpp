@@ -451,7 +451,7 @@ int _Execute( int argc , char* argv[] )
 
 	if (STDIN.set)
 	{
-		In.value = "inputfile.ply"; // used internally. no file actually created
+		In.value = new char[14] { "inputfile.ply" }; // used internally. no file actually created
 		In.set = true;
 
 		// read from stdin
@@ -477,7 +477,7 @@ int _Execute( int argc , char* argv[] )
 
 	if (STDOUT.set)
 	{
-		Out.value = "outputfile.ply"; // used internally. no file actually created
+		Out.value = new char[15] { "outputfile.ply" }; // used internally. no file actually created
 		Out.set = true;
 	}
 
