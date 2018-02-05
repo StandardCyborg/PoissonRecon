@@ -2,12 +2,12 @@
 #include <stdarg.h>
 #include <string.h>
 #include <stdio.h>
-#include <io.h>
 
 #if !defined(WIN32)
 #include <unistd.h>
 #else
 #include <Fcntl.h>
+#include <io.h>
 #endif
 
 #include "MemoryFileSystem.h"
