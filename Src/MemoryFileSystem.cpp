@@ -441,14 +441,11 @@ void MemoryFileSystem::WriteFileInMemoryToDisc(const char *filename)
 }
 
 // this is temporary, hence the poor implementation
-void MemoryFileSystem::WriteFileInMemoryToStdout(const char *filename)
+void MemoryFileSystem::WriteFileInMemoryToStdout(const char *filename, bool includeheader, int padding)
 {
 #if defined(WIN32)
 	setmode(fileno(stdout), O_BINARY);
 #endif
-
-	// so we can use stdout like a file
-	//::FILE *const fp = _fdopen(_dup(fileno(stdout)), "wb");
 
 	const int block_size = 128;
 
@@ -461,14 +458,24 @@ void MemoryFileSystem::WriteFileInMemoryToStdout(const char *filename)
 
 		unsigned char *c = buffer;
 
-		//for (int i = 0; i < iFileSize; ++i)
-		//{
-		//	putchar(*c++);
-		//}
-
-		//putchar(0);
+		if (includeheader)
+		{
+			// write a 32 char string with the length of the file
+			char buffer[32];
+			sprintf(buffer, "%u", iFileSize);
+			::fwrite(buffer, 1, 32, stdout);
+		}
 
 		::fwrite(c, 1, iFileSize, stdout);
+
+		// add extra padding if required
+		if (includeheader && padding > 0)
+		{
+			for (int i = 0; i < padding; ++i)
+			{
+				putchar('\n');
+			}
+		}
 
 		fflush(stdout);
 	}

@@ -157,6 +157,7 @@ cmdLineInt
 	BType( "bType" , BOUNDARY_NEUMANN+1 ) ,
 #endif // !FAST_COMPILE
 	MaxSolveDepth( "maxSolveDepth" ) ,
+	STDOUTHEADER("stdoutheader", 0),
 	Threads( "threads" , omp_get_num_procs() );
 
 cmdLineFloat
@@ -175,7 +176,7 @@ cmdLineReadable* params[] =
 #endif // !FAST_COMPILE
 	&In , &Depth , &Out , &XForm ,
 	&Scale , &Verbose , &CGSolverAccuracy , &NoComments , &LowResIterMultiplier ,
-	&KernelDepth , &SamplesPerNode , &Confidence , &NormalWeights , &NonManifold , &PolygonMesh , &ASCII , &STDIN, &STDOUT, &ShowResidual , &VoxelDepth ,
+	&KernelDepth , &SamplesPerNode , &Confidence , &NormalWeights , &NonManifold , &PolygonMesh , &ASCII , &STDIN, &STDOUT, &STDOUTHEADER, &ShowResidual , &VoxelDepth ,
 	&PointWeight , &VoxelGrid , &Threads , &MaxSolveDepth ,
 	&AdaptiveExponent ,
 	&Density ,
@@ -475,7 +476,7 @@ int _Execute( int argc , char* argv[] )
 		}
 	}
 
-	if (STDOUT.set)
+	if (STDOUT.set || STDOUTHEADER.set)
 	{
 		Out.value = new char[15] { "outputfile.ply" }; // used internally. no file actually created
 		Out.set = true;
@@ -714,10 +715,10 @@ int _Execute( int argc , char* argv[] )
 			if( ASCII.set ) PlyWritePolygons( Out.value , &mesh , PLY_ASCII         , &comments[0] , (int)comments.size() , iXForm );
 			else            PlyWritePolygons( Out.value , &mesh , PLY_BINARY_NATIVE , &comments[0] , (int)comments.size() , iXForm );
 		}
-
-		if (STDOUT.set)
+		
+		if (STDOUT.set || STDOUTHEADER.set)
 		{
-			MemoryFileSystem::WriteFileInMemoryToStdout(Out.value);
+			MemoryFileSystem::WriteFileInMemoryToStdout(Out.value, STDOUTHEADER.set, STDOUTHEADER.value);
 		}
 		else
 		{

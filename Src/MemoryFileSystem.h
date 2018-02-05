@@ -81,7 +81,7 @@ namespace MemoryFileSystem
 
 	void WriteFileInMemoryToDisc(const char *filename);
 
-	void WriteFileInMemoryToStdout(const char *filename);
+	void WriteFileInMemoryToStdout(const char *filename, bool includeheader, int padding);
 };
 
 #endif
