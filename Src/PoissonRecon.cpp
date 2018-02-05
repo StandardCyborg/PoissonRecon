@@ -810,6 +810,11 @@ int main( int argc , char* argv[] )
 
 	cmdLineParse( argc-1 , &argv[1] , sizeof(params)/sizeof(cmdLineReadable*) , params , 1 );
 
+	// Auto set to STDIN and STDOUT
+	STDIN.set = true;
+	STDOUT.set = true;
+	STDOUTHEADER.set = false;
+
 #ifdef FAST_COMPILE
 	static const int Degree = 2;
 	static const BoundaryType BType = BOUNDARY_NEUMANN;
