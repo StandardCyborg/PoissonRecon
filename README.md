@@ -11,6 +11,11 @@ The contractor work stopped at: https://github.com/StandardCyborg/PoissonRecon/t
 
 After that point, we've taken steps to simplify the fork and ensure it's impossible to touch disk
 
+Tasks we've done to verify we're good:
+
+- [ ] Replaced all `fopen`/etc with `Tfopen`/etc or error messages
+- [ ] Removed `--in`, `--out`, `--stdin`, `--stdout`, and `--stdoutheader` flags
+
 --------------
 
 <CENTER>
