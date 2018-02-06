@@ -15,3 +15,4 @@ Test/
 *.filters
 Test/ProcessTest/.vs/ProcessTest/v15/Browse.VC.db
 *.ipch
+PoissonRecon.exe

@@ -461,9 +461,9 @@ int _Execute( int argc , char* argv[] )
 		
 		if (NULL != inputFile)
 		{
-			char c;
+			int c;
 
-			while ((c = getchar())!= 0)
+			while ((c = getchar())!= 0 && (c != EOF))
 			{
 				char s = c;
 				MemoryFileSystem::fwrite(&s, 1, 1, inputFile);
