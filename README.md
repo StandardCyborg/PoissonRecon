@@ -1,4 +1,18 @@
 <CENTER><H2>Screened Poisson Surface Reconstruction <BR>(and Smoothed Signed Distance Reconstruction)<BR>Version 9.01</H2></CENTER>
+
+This is a fork from https://github.com/mkazhdan/PoissonRecon to remove any interactions with disk:
+
+- [x] Remove `--in`/`--out` and replace them with `stdin`/`stdout`
+- [x] Remove `/tmp` usage and replace it with in-memory files
+
+The majority of the diskless work has been done from https://github.com/squaredprogramming on a contractor basis
+
+The contractor work stopped at: https://github.com/StandardCyborg/PoissonRecon/tree/836ffe36518921c78063c63bdf3aa262f64df5a0
+
+After that point, we've taken steps to simplify the fork and ensure it's impossible to touch disk
+
+--------------
+
 <CENTER>
 <A HREF="#LINKS">links</A>
 <A HREF="#EXECUTABLES">executables</A>
