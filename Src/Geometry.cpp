@@ -54,7 +54,7 @@ BufferedReadWriteFile::BufferedReadWriteFile( const char* fileName , const char*
 
 		Tmktemp( _fileName );
 		_fp = Tfopen( _fileName , "w+b" );
-		
+
 		tempFile = true;
 	}
 	if( !_fp ) fprintf( stderr , "[ERROR] Failed to open file: %s\n" , _fileName ) , exit( 0 );
