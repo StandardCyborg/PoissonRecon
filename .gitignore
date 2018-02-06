@@ -5,14 +5,4 @@
 /Bin/
 *.opensdf
 *.bat
-/.vs/
-Test/ProcessTest/ProcessTest/Debug/
-Test/ProcessTest/Debug/
-Test/
-*.VC.opendb
 *.ply
-*.user
-*.filters
-Test/ProcessTest/.vs/ProcessTest/v15/Browse.VC.db
-*.ipch
-PoissonRecon.exe
