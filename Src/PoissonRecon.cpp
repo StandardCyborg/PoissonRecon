@@ -392,7 +392,10 @@ int _Execute( int argc , char* argv[] )
 	XForm4x4< Real > xForm , iXForm;
 	if( XForm.set )
 	{
-		FILE* fp = fopen( XForm.value , "r" );
+	  fprintf(stderr, "Reached PoissonRecon::_Execute unexpectedly");
+	  exit(1);
+
+		FILE* fp = fopen( XForm.value , "r" ); // unreachable
 		if( !fp )
 		{
 			fprintf( stderr , "[WARNING] Could not read x-form from: %s\n" , XForm.value );
@@ -617,8 +620,11 @@ int _Execute( int argc , char* argv[] )
 
 	if( VoxelGrid.set )
 	{
+	  fprintf(stderr, "VoxelGrid parameter not currently supported due to hitting disk");
+	  exit(1);
+
 		profiler.start();
-		FILE* fp = fopen( VoxelGrid.value , "wb" );
+		FILE* fp = fopen( VoxelGrid.value , "wb" ); // unreachable
 		if( !fp ) fprintf( stderr , "Failed to open voxel file for writing: %s\n" , VoxelGrid.value );
 		else
 		{
