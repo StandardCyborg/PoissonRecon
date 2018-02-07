@@ -54,10 +54,7 @@ class MemoryInfo
  public:
   static size_t Usage(void)
   {
-    fprintf(stderr, "Reached MemoryInfo#Usage unexpectedly");
-    exit(1);
-
-		FILE* f = fopen("/proc/self/stat","rb"); // unreachable
+		FILE* f = fopen("/proc/self/stat","rb"); // allowed due to being read-only
 		
 		int d;
 		long ld;
