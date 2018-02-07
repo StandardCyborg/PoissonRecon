@@ -451,13 +451,11 @@ int _Execute( int argc , char* argv[] )
 
 	// read from stdin
 	MemoryFileSystem::FILE *inputFile = MemoryFileSystem::fopen(IN_MEMORY_INPUT_FILE, "wb");
-	
 	if (NULL == inputFile)
 	{
 		fprintf(stderr, "inputFile was unexpectedly NULL");
 		exit(1);
 	}
-
 	int c;
 	while ((c = getchar())!= 0 && (c != EOF))
 	{
