@@ -66,19 +66,10 @@ void DumpOutput2( std::vector< char* >& comments , const char* format , ... );
 
 #include <stdarg.h>
 char* IN_MEMORY_INPUT_FILE="inputfile.ply";
-char* outputFile=NULL;
+char* OUTPUT_MEMORY_INPUT_FILE="outputfile.ply";
 int echoStdout=0;
 void DumpOutput( const char* format , ... )
 {
-	if( outputFile )
-	{
-		FILE* fp = fopen( outputFile , "a" );
-		va_list args;
-		va_start( args , format );
-		vfprintf( fp , format , args );
-		fclose( fp );
-		va_end( args );
-	}
 	if( echoStdout )
 	{
 		va_list args;
@@ -89,15 +80,6 @@ void DumpOutput( const char* format , ... )
 }
 void DumpOutput2( std::vector< char* >& comments  , const char* format , ... )
 {
-	if( outputFile )
-	{
-		FILE* fp = fopen( outputFile , "a" );
-		va_list args;
-		va_start( args , format );
-		vfprintf( fp , format , args );
-		fclose( fp );
-		va_end( args );
-	}
 	if( echoStdout )
 	{
 		va_list args;
@@ -173,7 +155,7 @@ cmdLineReadable* params[] =
 #ifndef FAST_COMPILE
 	&Degree , &Double , &BType ,
 #endif // !FAST_COMPILE
-	&Depth , &Out , &XForm ,
+	&Depth , &XForm ,
 	&Scale , &Verbose , &CGSolverAccuracy , &NoComments , &LowResIterMultiplier ,
 	&KernelDepth , &SamplesPerNode , &Confidence , &NormalWeights , &NonManifold , &PolygonMesh , &ASCII , &STDIN, &STDOUT, &ShowResidual , &VoxelDepth ,
 	&PointWeight , &VoxelGrid , &Threads , &MaxSolveDepth ,
@@ -195,7 +177,7 @@ void ShowUsage(char* ex)
 {
 	printf( "Usage: %s\n" , ex );
 	printf( "\tstdin (i.e. `< src.ply`) input .ply file\n" );
-	printf( "\t[--%s <ouput triangle mesh>]\n" , Out.name );
+	printf( "\tstdout (i.e. `> target.ply`) output .ply file\n" );
 
 	printf( "\t[--%s <ouput voxel grid>]\n" , VoxelGrid.name );
 
@@ -463,14 +445,6 @@ int _Execute( int argc , char* argv[] )
 	}
 	MemoryFileSystem::fclose(inputFile);
 
-	if (STDOUT.set)
-	{
-		Out.value = new char[15];
-		strcpy(Out.value, "outputfile.ply"); // used internally. no file actually created
-
-		Out.set = true;
-	}
-
 	if( !MaxSolveDepth.set ) MaxSolveDepth.value = Depth.value;
 	
 	OctNode< TreeNodeData >::SetAllocator( MEMORY_ALLOCATOR_BLOCK_SIZE );
@@ -667,7 +641,7 @@ int _Execute( int argc , char* argv[] )
 		profiler.dumpOutput( "Got voxel grid:" );
 	}
 
-	if( Out.set )
+	if( true )
 	{
 		profiler.start();
 		SparseNodeData< ProjectiveData< Point3D< Real > , Real > , DATA_DEGREE >* colorData = NULL;
@@ -691,16 +665,16 @@ int _Execute( int argc , char* argv[] )
 
 		if( NoComments.set )
 		{
-			if( ASCII.set ) PlyWritePolygons( Out.value , &mesh , PLY_ASCII         , NULL , 0 , iXForm );
-			else            PlyWritePolygons( Out.value , &mesh , PLY_BINARY_NATIVE , NULL , 0 , iXForm );
+			if( ASCII.set ) PlyWritePolygons( OUTPUT_MEMORY_INPUT_FILE , &mesh , PLY_ASCII         , NULL , 0 , iXForm );
+			else            PlyWritePolygons( OUTPUT_MEMORY_INPUT_FILE , &mesh , PLY_BINARY_NATIVE , NULL , 0 , iXForm );
 		}
 		else
 		{
-			if( ASCII.set ) PlyWritePolygons( Out.value , &mesh , PLY_ASCII         , &comments[0] , (int)comments.size() , iXForm );
-			else            PlyWritePolygons( Out.value , &mesh , PLY_BINARY_NATIVE , &comments[0] , (int)comments.size() , iXForm );
+			if( ASCII.set ) PlyWritePolygons( OUTPUT_MEMORY_INPUT_FILE , &mesh , PLY_ASCII         , &comments[0] , (int)comments.size() , iXForm );
+			else            PlyWritePolygons( OUTPUT_MEMORY_INPUT_FILE , &mesh , PLY_BINARY_NATIVE , &comments[0] , (int)comments.size() , iXForm );
 		}
 		
-		MemoryFileSystem::WriteFileInMemoryToStdout(Out.value);
+		MemoryFileSystem::WriteFileInMemoryToStdout(OUTPUT_MEMORY_INPUT_FILE);
 	}
 	if( density ) delete density , density = NULL;
 	DumpOutput2( comments , "#          Total Solve: %9.1f (s), %9.1f (MB)\n" , Time()-startTime , tree.maxMemoryUsage() );
