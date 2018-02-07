@@ -1087,6 +1087,9 @@ void OctNode< NodeData >::ConstNeighborKey< LeftRadius , RightRadius >::getNeigh
 
 template< class NodeData >
 int OctNode< NodeData >::write(const char* fileName) const{
+  fprintf(stderr, "Reached OctNode#write unexpectedly");
+  exit(1);
+
 	FILE* fp=fopen(fileName,"wb");
 	if(!fp){return 0;}
 	int ret=write(fp);
@@ -1102,7 +1105,10 @@ int OctNode< NodeData >::write(FILE* fp) const{
 template< class NodeData >
 int OctNode< NodeData >::read( const char* fileName , void (*Initializer)( OctNode& ) )
 {
-	FILE* fp = fopen( fileName , "rb" );
+  fprintf(stderr, "Reached OctNode#read unexpectedly");
+  exit(1);
+
+	FILE* fp = fopen( fileName , "rb" ); // unreachable
 	if( !fp ) return 0;
 	int ret = read( fp , Initializer );
 	fclose( fp );

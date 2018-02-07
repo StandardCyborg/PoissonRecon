@@ -54,6 +54,9 @@ class MemoryInfo
  public:
   static size_t Usage(void)
   {
+    fprintf(stderr, "Reached MemoryInfo#Usage unexpectedly");
+    exit(1);
+
 		FILE* f = fopen("/proc/self/stat","rb");
 		
 		int d;
