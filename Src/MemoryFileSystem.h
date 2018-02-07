@@ -79,9 +79,7 @@ namespace MemoryFileSystem
 	
 	char *_mktemp(char *);
 
-	void WriteFileInMemoryToDisc(const char *filename);
-
-	void WriteFileInMemoryToStdout(const char *filename, bool includeheader, int padding);
+	void WriteFileInMemoryToStdout(const char *filename);
 };
 
 #endif

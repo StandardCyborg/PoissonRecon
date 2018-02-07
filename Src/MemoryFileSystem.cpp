@@ -97,36 +97,8 @@ MemoryFileSystem::FILE *MemoryFileSystem::MemoryFileDrive::CreateVirtualFile(con
 		}
 		else
 		{
-			// see if the file exist on the disk and open it if so
-			::FILE *fp = ::fopen(filename, "rb");
-
-			if (fp != NULL)
-			{
-				m_memoryFileMap.insert(std::make_pair(FileName, InternalFILE()));
-
-				::fseek(fp, 0, SEEK_END);
-				size_t fileSize = ftell(fp);
-				::fseek(fp, 0, SEEK_SET);
-
-				unsigned char *buffer = new unsigned char[fileSize];
-				
-				for (size_t i = 0; i < fileSize; ++i)
-				{
-					buffer[i] = ::fgetc(fp);
-				}
-
-				m_memoryFileMap[FileName].iBufferSize = fileSize;
-				m_memoryFileMap[FileName].buffer = buffer;
-				m_memoryFileMap[FileName].iLocation = 0;
-				m_memoryFileMap[FileName].iFileSize = fileSize;
-				m_memoryFileMap[FileName].Reading = true;
-				m_memoryFileMap[FileName].iLocation = 0;
-			}
-			else
-			{
-				// file not in memory or on the disk
-				return NULL;
-			}
+			// file not in memory or on the disk
+			return NULL;
 		}
 	}
 	// writing, overwrite if exist
@@ -421,27 +393,7 @@ char *MemoryFileSystem::_mktemp(char *_template){
 }
 
 // this is temporary, hence the poor implementation
-void MemoryFileSystem::WriteFileInMemoryToDisc(const char *filename)
-{
-	::FILE *fp = ::fopen(filename, "wb");
-
-	if (GlobalDrive.HasFile(filename) && fp != NULL)
-	{
-		unsigned char *buffer = GlobalDrive.m_memoryFileMap[filename].buffer;
-		size_t iBufferSize = GlobalDrive.m_memoryFileMap[filename].iBufferSize;
-		size_t iLocation = GlobalDrive.m_memoryFileMap[filename].iLocation;
-		size_t iFileSize = GlobalDrive.m_memoryFileMap[filename].iFileSize;
-
-		unsigned char *c = buffer;
-
-		::fwrite(c, 1, iFileSize, fp);
-	}
-
-	::fclose(fp);
-}
-
-// this is temporary, hence the poor implementation
-void MemoryFileSystem::WriteFileInMemoryToStdout(const char *filename, bool includeheader, int padding)
+void MemoryFileSystem::WriteFileInMemoryToStdout(const char *filename)
 {
 #if defined(WIN32)
 	setmode(fileno(stdout), O_BINARY);
@@ -458,24 +410,7 @@ void MemoryFileSystem::WriteFileInMemoryToStdout(const char *filename, bool incl
 
 		unsigned char *c = buffer;
 
-		if (includeheader)
-		{
-			// write a 32 char string with the length of the file
-			char buffer[32];
-			sprintf(buffer, "%u", iFileSize);
-			::fwrite(buffer, 1, 32, stdout);
-		}
-
 		::fwrite(c, 1, iFileSize, stdout);
-
-		// add extra padding if required
-		if (includeheader && padding > 0)
-		{
-			for (int i = 0; i < padding; ++i)
-			{
-				putchar('\n');
-			}
-		}
 
 		fflush(stdout);
 	}

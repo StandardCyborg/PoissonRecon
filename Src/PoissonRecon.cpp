@@ -701,15 +701,7 @@ int _Execute( int argc , char* argv[] )
 			else            PlyWritePolygons( Out.value , &mesh , PLY_BINARY_NATIVE , &comments[0] , (int)comments.size() , iXForm );
 		}
 		
-		if (STDOUT.set || STDOUTHEADER.set)
-		{
-			MemoryFileSystem::WriteFileInMemoryToStdout(Out.value, STDOUTHEADER.set, STDOUTHEADER.value);
-		}
-		else
-		{
-			MemoryFileSystem::WriteFileInMemoryToDisc(Out.value);
-		}
-
+		MemoryFileSystem::WriteFileInMemoryToStdout(Out.value);
 	}
 	if( density ) delete density , density = NULL;
 	DumpOutput2( comments , "#          Total Solve: %9.1f (s), %9.1f (MB)\n" , Time()-startTime , tree.maxMemoryUsage() );
