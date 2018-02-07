@@ -195,6 +195,7 @@ cmdLineReadable* params[] =
 void ShowUsage(char* ex)
 {
 	printf( "Usage: %s\n" , ex );
+	printf( "\tstdin (i.e. `< src.ply`) input .ply file\n" );
 	printf( "\t[--%s <ouput triangle mesh>]\n" , Out.name );
 
 	printf( "\t[--%s <ouput voxel grid>]\n" , VoxelGrid.name );
@@ -458,14 +459,21 @@ int _Execute( int argc , char* argv[] )
 	}
 
 	int c;
-
+	bool received_content = false;
 	while ((c = getchar())!= 0 && (c != EOF))
 	{
 		char s = c;
+		received_content = true;
 		MemoryFileSystem::fwrite(&s, 1, 1, inputFile);
 	}
-
 	MemoryFileSystem::fclose(inputFile);
+
+	// If we never received any stdin input, then show help prompt
+	if (!received_content)
+	{
+		ShowUsage( argv[0] );
+		return 0;
+	}
 
 	if (STDOUT.set || STDOUTHEADER.set)
 	{
