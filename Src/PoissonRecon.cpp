@@ -582,7 +582,7 @@ int _Execute( int argc , char* argv[] )
 #endif // _WIN
 		char tempPath[1024];
 		tempPath[0] = 0;
-		strcpy( tempPath , TempDir.value );
+		strcpy( tempPath , IN_MEMORY_TEMP_DIR );
 		if( strlen(tempPath)==0 ) sprintf( tempPath , ".%c" , FileSeparator );
 		if( tempPath[ strlen( tempPath )-1 ]==FileSeparator ) sprintf( tempHeader , "%sPR_" , tempPath );
 		else                                                  sprintf( tempHeader , "%s%cPR_" , tempPath , FileSeparator );
