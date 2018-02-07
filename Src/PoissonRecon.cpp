@@ -157,7 +157,6 @@ cmdLineInt
 	BType( "bType" , BOUNDARY_NEUMANN+1 ) ,
 #endif // !FAST_COMPILE
 	MaxSolveDepth( "maxSolveDepth" ) ,
-	STDOUTHEADER("stdoutheader", 0),
 	Threads( "threads" , omp_get_num_procs() );
 
 cmdLineFloat
@@ -176,7 +175,7 @@ cmdLineReadable* params[] =
 #endif // !FAST_COMPILE
 	&Depth , &Out , &XForm ,
 	&Scale , &Verbose , &CGSolverAccuracy , &NoComments , &LowResIterMultiplier ,
-	&KernelDepth , &SamplesPerNode , &Confidence , &NormalWeights , &NonManifold , &PolygonMesh , &ASCII , &STDIN, &STDOUT, &STDOUTHEADER, &ShowResidual , &VoxelDepth ,
+	&KernelDepth , &SamplesPerNode , &Confidence , &NormalWeights , &NonManifold , &PolygonMesh , &ASCII , &STDIN, &STDOUT, &ShowResidual , &VoxelDepth ,
 	&PointWeight , &VoxelGrid , &Threads , &MaxSolveDepth ,
 	&AdaptiveExponent ,
 	&Density ,
@@ -464,7 +463,7 @@ int _Execute( int argc , char* argv[] )
 	}
 	MemoryFileSystem::fclose(inputFile);
 
-	if (STDOUT.set || STDOUTHEADER.set)
+	if (STDOUT.set)
 	{
 		Out.value = new char[15];
 		strcpy(Out.value, "outputfile.ply"); // used internally. no file actually created
@@ -790,7 +789,6 @@ int main( int argc , char* argv[] )
 	// Auto set to STDIN and STDOUT
 	STDIN.set = true;
 	STDOUT.set = true;
-	STDOUTHEADER.set = false;
 
 #ifdef FAST_COMPILE
 	static const int Degree = 2;
