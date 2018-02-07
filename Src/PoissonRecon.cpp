@@ -65,6 +65,7 @@ void DumpOutput2( std::vector< char* >& comments , const char* format , ... );
 #endif // DEFAULT_FULL_DEPTH
 
 #include <stdarg.h>
+char* IN_MEMORY_INPUT_FILE="inputfile.ply";
 char* outputFile=NULL;
 int echoStdout=0;
 void DumpOutput( const char* format , ... )
@@ -115,7 +116,6 @@ void DumpOutput2( std::vector< char* >& comments  , const char* format , ... )
 
 
 cmdLineString
-	In( "in" ) ,
 	Out( "out" ) ,
 	TempDir( "tempDir" ) ,
 	VoxelGrid( "voxel" ) ,
@@ -174,7 +174,7 @@ cmdLineReadable* params[] =
 #ifndef FAST_COMPILE
 	&Degree , &Double , &BType ,
 #endif // !FAST_COMPILE
-	&In , &Depth , &Out , &XForm ,
+	&Depth , &Out , &XForm ,
 	&Scale , &Verbose , &CGSolverAccuracy , &NoComments , &LowResIterMultiplier ,
 	&KernelDepth , &SamplesPerNode , &Confidence , &NormalWeights , &NonManifold , &PolygonMesh , &ASCII , &STDIN, &STDOUT, &STDOUTHEADER, &ShowResidual , &VoxelDepth ,
 	&PointWeight , &VoxelGrid , &Threads , &MaxSolveDepth ,
@@ -195,8 +195,6 @@ cmdLineReadable* params[] =
 void ShowUsage(char* ex)
 {
 	printf( "Usage: %s\n" , ex );
-	printf( "\t --%s <input points>\n" , In.name );
-
 	printf( "\t[--%s <ouput triangle mesh>]\n" , Out.name );
 
 	printf( "\t[--%s <ouput voxel grid>]\n" , VoxelGrid.name );
@@ -450,32 +448,24 @@ int _Execute( int argc , char* argv[] )
 	OctreeProfiler< Real > profiler( tree );
 	tree.threads = Threads.value;
 
-	if (STDIN.set)
+	// read from stdin
+	MemoryFileSystem::FILE *inputFile = MemoryFileSystem::fopen(IN_MEMORY_INPUT_FILE, "wb");
+	
+	if (NULL == inputFile)
 	{
-		In.value = new char[14];
-		strcpy(In.value, "inputfile.ply"); // used internally. no file actually created
-		In.set = true;
-
-		// read from stdin
-		MemoryFileSystem::FILE *inputFile = MemoryFileSystem::fopen(In.value, "wb");
-		
-		if (NULL != inputFile)
-		{
-			int c;
-
-			while ((c = getchar())!= 0 && (c != EOF))
-			{
-				char s = c;
-				MemoryFileSystem::fwrite(&s, 1, 1, inputFile);
-			}
-
-			MemoryFileSystem::fclose(inputFile);
-		}
-		else
-		{
-			return 0;
-		}
+		fprintf(stderr, "inputFile was unexpectedly NULL");
+		exit(1);
 	}
+
+	int c;
+
+	while ((c = getchar())!= 0 && (c != EOF))
+	{
+		char s = c;
+		MemoryFileSystem::fwrite(&s, 1, 1, inputFile);
+	}
+
+	MemoryFileSystem::fclose(inputFile);
 
 	if (STDOUT.set || STDOUTHEADER.set)
 	{
@@ -485,11 +475,6 @@ int _Execute( int argc , char* argv[] )
 		Out.set = true;
 	}
 
-	if( !In.set )
-	{
-		ShowUsage( argv[0] );
-		return 0;
-	}
 	if( !MaxSolveDepth.set ) MaxSolveDepth.value = Depth.value;
 	
 	OctNode< TreeNodeData >::SetAllocator( MEMORY_ALLOCATOR_BLOCK_SIZE );
@@ -513,19 +498,19 @@ int _Execute( int argc , char* argv[] )
 	{
 		profiler.start();
 		PointStream* pointStream;
-		char* ext = GetFileExtension( In.value );
+		char* ext = GetFileExtension( IN_MEMORY_INPUT_FILE );
 		if( Color.set && Color.value>0 )
 		{
 			sampleData = new std::vector< ProjectiveData< Point3D< Real > , Real > >();
-			if     ( !strcasecmp( ext , "bnpts" ) ) pointStream = new BinaryOrientedPointStreamWithData< Real , Point3D< Real > , float , Point3D< unsigned char > >( In.value );
-			else if( !strcasecmp( ext , "ply"   ) ) pointStream = new    PLYOrientedPointStreamWithData< Real , Point3D< Real > >( In.value , ColorInfo< Real >::PlyProperties , 6 , ColorInfo< Real >::ValidPlyProperties );
-			else                                    pointStream = new  ASCIIOrientedPointStreamWithData< Real , Point3D< Real > >( In.value , ColorInfo< Real >::ReadASCII );
+			if     ( !strcasecmp( ext , "bnpts" ) ) pointStream = new BinaryOrientedPointStreamWithData< Real , Point3D< Real > , float , Point3D< unsigned char > >( IN_MEMORY_INPUT_FILE );
+			else if( !strcasecmp( ext , "ply"   ) ) pointStream = new    PLYOrientedPointStreamWithData< Real , Point3D< Real > >( IN_MEMORY_INPUT_FILE , ColorInfo< Real >::PlyProperties , 6 , ColorInfo< Real >::ValidPlyProperties );
+			else                                    pointStream = new  ASCIIOrientedPointStreamWithData< Real , Point3D< Real > >( IN_MEMORY_INPUT_FILE , ColorInfo< Real >::ReadASCII );
 		}
 		else
 		{
-			if     ( !strcasecmp( ext , "bnpts" ) ) pointStream = new BinaryOrientedPointStream< Real , float >( In.value );
-			else if( !strcasecmp( ext , "ply"   ) ) pointStream = new    PLYOrientedPointStream< Real >( In.value );
-			else                                    pointStream = new  ASCIIOrientedPointStream< Real >( In.value );
+			if     ( !strcasecmp( ext , "bnpts" ) ) pointStream = new BinaryOrientedPointStream< Real , float >( IN_MEMORY_INPUT_FILE );
+			else if( !strcasecmp( ext , "ply"   ) ) pointStream = new    PLYOrientedPointStream< Real >( IN_MEMORY_INPUT_FILE );
+			else                                    pointStream = new  ASCIIOrientedPointStream< Real >( IN_MEMORY_INPUT_FILE );
 		}
 		delete[] ext;
 		XPointStream _pointStream( xForm , *pointStream );
