@@ -114,8 +114,6 @@ cmdLineReadable
 	NormalWeights( "nWeights" ) ,
 	NonManifold( "nonManifold" ) ,
 	ASCII( "ascii" ) ,
-	STDIN("stdin"),
-	STDOUT("stdout"),
 	Density( "density" ) ,
 	LinearFit( "linearFit" ) ,
 	PrimalVoxel( "primalVoxel" ) ,
@@ -157,7 +155,7 @@ cmdLineReadable* params[] =
 #endif // !FAST_COMPILE
 	&Depth , &XForm ,
 	&Scale , &Verbose , &CGSolverAccuracy , &NoComments , &LowResIterMultiplier ,
-	&KernelDepth , &SamplesPerNode , &Confidence , &NormalWeights , &NonManifold , &PolygonMesh , &ASCII , &STDIN, &STDOUT, &ShowResidual , &VoxelDepth ,
+	&KernelDepth , &SamplesPerNode , &Confidence , &NormalWeights , &NonManifold , &PolygonMesh , &ASCII , &ShowResidual , &VoxelDepth ,
 	&PointWeight , &VoxelGrid , &Threads , &MaxSolveDepth ,
 	&AdaptiveExponent ,
 	&Density ,
@@ -759,10 +757,6 @@ int main( int argc , char* argv[] )
 	double t = Time();
 
 	cmdLineParse( argc-1 , &argv[1] , sizeof(params)/sizeof(cmdLineReadable*) , params , 1 );
-
-	// Auto set to STDIN and STDOUT
-	STDIN.set = true;
-	STDOUT.set = true;
 
 #ifdef FAST_COMPILE
 	static const int Degree = 2;
