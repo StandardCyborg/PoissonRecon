@@ -66,7 +66,8 @@ void DumpOutput2( std::vector< char* >& comments , const char* format , ... );
 
 #include <stdarg.h>
 char* IN_MEMORY_INPUT_FILE="inputfile.ply";
-char* OUTPUT_MEMORY_INPUT_FILE="outputfile.ply";
+char* IN_MEMORY_OUTPUT_FILE="outputfile.ply";
+char* IN_MEMORY_TEMP_DIR="/does-not-exist";
 int echoStdout=0;
 void DumpOutput( const char* format , ... )
 {
@@ -98,8 +99,6 @@ void DumpOutput2( std::vector< char* >& comments  , const char* format , ... )
 
 
 cmdLineString
-	Out( "out" ) ,
-	TempDir( "tempDir" ) ,
 	VoxelGrid( "voxel" ) ,
 	XForm( "xForm" );
 
@@ -164,7 +163,6 @@ cmdLineReadable* params[] =
 	&Color ,
 	&LinearFit ,
 	&PrimalVoxel ,
-	&TempDir ,
 #if defined( _WIN32 ) || defined( _WIN64 )
 	&Performance ,
 #endif // _WIN32 || _WIN64
@@ -235,8 +233,6 @@ void ShowUsage(char* ex)
 #ifdef _OPENMP
 	printf( "\t[--%s <num threads>=%d]\n" , Threads.name , Threads.value );
 #endif // _OPENMP
-
-	printf( "\t[--%s]\n" , TempDir.name );
 
 	printf( "\t[--%s]\n" , Verbose.name );
 
@@ -586,15 +582,7 @@ int _Execute( int argc , char* argv[] )
 #endif // _WIN
 		char tempPath[1024];
 		tempPath[0] = 0;
-		if( TempDir.set ) strcpy( tempPath , TempDir.value );
-		else
-		{
-#if defined( _WIN32 ) || defined( _WIN64 )
-			GetTempPath( sizeof(tempPath) , tempPath );
-#else // !_WIN
-			if( std::getenv( "TMPDIR" ) ) strcpy( tempPath , std::getenv( "TMPDIR" ) );
-#endif // _WIN
-		}
+		strcpy( tempPath , TempDir.value );
 		if( strlen(tempPath)==0 ) sprintf( tempPath , ".%c" , FileSeparator );
 		if( tempPath[ strlen( tempPath )-1 ]==FileSeparator ) sprintf( tempHeader , "%sPR_" , tempPath );
 		else                                                  sprintf( tempHeader , "%s%cPR_" , tempPath , FileSeparator );
@@ -669,16 +657,16 @@ int _Execute( int argc , char* argv[] )
 
 		if( NoComments.set )
 		{
-			if( ASCII.set ) PlyWritePolygons( OUTPUT_MEMORY_INPUT_FILE , &mesh , PLY_ASCII         , NULL , 0 , iXForm );
-			else            PlyWritePolygons( OUTPUT_MEMORY_INPUT_FILE , &mesh , PLY_BINARY_NATIVE , NULL , 0 , iXForm );
+			if( ASCII.set ) PlyWritePolygons( IN_MEMORY_OUTPUT_FILE , &mesh , PLY_ASCII         , NULL , 0 , iXForm );
+			else            PlyWritePolygons( IN_MEMORY_OUTPUT_FILE , &mesh , PLY_BINARY_NATIVE , NULL , 0 , iXForm );
 		}
 		else
 		{
-			if( ASCII.set ) PlyWritePolygons( OUTPUT_MEMORY_INPUT_FILE , &mesh , PLY_ASCII         , &comments[0] , (int)comments.size() , iXForm );
-			else            PlyWritePolygons( OUTPUT_MEMORY_INPUT_FILE , &mesh , PLY_BINARY_NATIVE , &comments[0] , (int)comments.size() , iXForm );
+			if( ASCII.set ) PlyWritePolygons( IN_MEMORY_OUTPUT_FILE , &mesh , PLY_ASCII         , &comments[0] , (int)comments.size() , iXForm );
+			else            PlyWritePolygons( IN_MEMORY_OUTPUT_FILE , &mesh , PLY_BINARY_NATIVE , &comments[0] , (int)comments.size() , iXForm );
 		}
 		
-		MemoryFileSystem::WriteFileInMemoryToStdout(OUTPUT_MEMORY_INPUT_FILE);
+		MemoryFileSystem::WriteFileInMemoryToStdout(IN_MEMORY_OUTPUT_FILE);
 	}
 	if( density ) delete density , density = NULL;
 	DumpOutput2( comments , "#          Total Solve: %9.1f (s), %9.1f (MB)\n" , Time()-startTime , tree.maxMemoryUsage() );
