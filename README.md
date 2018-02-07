@@ -13,8 +13,8 @@ After that point, we've taken steps to simplify the fork and ensure it's impossi
 
 Tasks we've done to verify we're good:
 
-- [ ] Replaced all `fopen` with error messages
-- [ ] Removed `--in`, `--out`, `--stdin`, `--stdout`, and `--stdoutheader` flags
+- [x] Replaced all `fopen` with error messages
+- [x] Removed `--in`, `--out`, `--stdin`, `--stdout`, and `--stdoutheader` flags
 
 ![Can't touch disk](https://i.imgflip.com/243bv7.jpg)
 
