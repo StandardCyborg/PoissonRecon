@@ -459,21 +459,12 @@ int _Execute( int argc , char* argv[] )
 	}
 
 	int c;
-	bool received_content = false;
 	while ((c = getchar())!= 0 && (c != EOF))
 	{
 		char s = c;
-		received_content = true;
 		MemoryFileSystem::fwrite(&s, 1, 1, inputFile);
 	}
 	MemoryFileSystem::fclose(inputFile);
-
-	// If we never received any stdin input, then show help prompt
-	if (!received_content)
-	{
-		ShowUsage( argv[0] );
-		return 0;
-	}
 
 	if (STDOUT.set || STDOUTHEADER.set)
 	{
