@@ -57,7 +57,7 @@ class MemoryInfo
     fprintf(stderr, "Reached MemoryInfo#Usage unexpectedly");
     exit(1);
 
-		FILE* f = fopen("/proc/self/stat","rb");
+		FILE* f = fopen("/proc/self/stat","rb"); // unreachable
 		
 		int d;
 		long ld;

@@ -90,7 +90,10 @@ SparseMatrix<T>::~SparseMatrix( void ){ Resize( 0 ); }
 template< class T >
 bool SparseMatrix< T >::write( const char* fileName ) const
 {
-	FILE* fp = fopen( fileName , "wb" );
+  fprintf(stderr, "Reached SparseMatrix::write unexpectedly");
+  exit(1);
+
+	FILE* fp = fopen( fileName , "wb" ); // unreachable
 	if( !fp ) return false;
 	bool ret = write( fp );
 	fclose( fp );
@@ -99,7 +102,10 @@ bool SparseMatrix< T >::write( const char* fileName ) const
 template< class T >
 bool SparseMatrix< T >::read( const char* fileName )
 {
-	FILE* fp = fopen( fileName , "rb" );
+  fprintf(stderr, "Reached SparseMatrix::Reached unexpectedly");
+  exit(1);
+
+	FILE* fp = fopen( fileName , "rb" ); // unreachable
 	if( !fp ) return false;
 	bool ret = read( fp );
 	fclose( fp );

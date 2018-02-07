@@ -51,7 +51,10 @@ bool MemoryOrientedPointStream< Real >::nextPoint( OrientedPoint3D< Real >& p )
 template< class Real >
 ASCIIOrientedPointStream< Real >::ASCIIOrientedPointStream( const char* fileName )
 {
-	_fp = fopen( fileName , "r" );
+  fprintf(stderr, "Reached ASCIIOrientedPointStream::ASCIIOrientedPointStream unexpectedly");
+  exit(1);
+
+	_fp = fopen( fileName , "r" ); // unreachable
 	if( !_fp ) fprintf( stderr , "Failed to open file for reading: %s\n" , fileName ) , exit( 0 );
 }
 template< class Real >
@@ -79,7 +82,11 @@ template< class Real , class RealOnDisk >
 BinaryOrientedPointStream< Real , RealOnDisk >::BinaryOrientedPointStream( const char* fileName )
 {
 	_pointsInBuffer = _currentPointIndex = 0;
-	_fp = fopen( fileName , "rb" );
+
+  fprintf(stderr, "Reached BinaryOrientedPointStream::BinaryOrientedPointStream unexpectedly");
+  exit(1);
+
+	_fp = fopen( fileName , "rb" ); // unreachable
 	if( !_fp ) fprintf( stderr , "Failed to open file for reading: %s\n" , fileName ) , exit( 0 );
 }
 template< class Real , class RealOnDisk >
@@ -230,7 +237,10 @@ bool MemoryOrientedPointStreamWithData< Real , Data >::nextPoint( OrientedPoint3
 template< class Real , class Data >
 ASCIIOrientedPointStreamWithData< Real , Data >::ASCIIOrientedPointStreamWithData( const char* fileName , Data (*readData)( FILE* ) ) : _readData( readData )
 {
-	_fp = fopen( fileName , "r" );
+  fprintf(stderr, "Reached ASCIIOrientedPointStreamWithData::ASCIIOrientedPointStreamWithData unexpectedly");
+  exit(1);
+
+	_fp = fopen( fileName , "r" ); // unreachable
 	if( !_fp ) fprintf( stderr , "Failed to open file for reading: %s\n" , fileName ) , exit( 0 );
 }
 template< class Real , class Data >
@@ -259,7 +269,11 @@ template< class Real , class Data , class RealOnDisk , class DataOnDisk >
 BinaryOrientedPointStreamWithData< Real , Data , RealOnDisk , DataOnDisk >::BinaryOrientedPointStreamWithData( const char* fileName )
 {
 	_pointsInBuffer = _currentPointIndex = 0;
-	_fp = fopen( fileName , "rb" );
+
+  fprintf(stderr, "Reached BinaryOrientedPointStreamWithData::BinaryOrientedPointStreamWithData unexpectedly");
+  exit(1);
+
+	_fp = fopen( fileName , "rb" ); // unreachable
 	if( !_fp ) fprintf( stderr , "Failed to open file for reading: %s\n" , fileName ) , exit( 0 );
 }
 template< class Real , class Data , class RealOnDisk , class DataOnDisk >

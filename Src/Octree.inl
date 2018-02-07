@@ -1090,7 +1090,7 @@ int OctNode< NodeData >::write(const char* fileName) const{
   fprintf(stderr, "Reached OctNode#write unexpectedly");
   exit(1);
 
-	FILE* fp=fopen(fileName,"wb");
+	FILE* fp=fopen(fileName,"wb"); // unreachable
 	if(!fp){return 0;}
 	int ret=write(fp);
 	fclose(fp);
