@@ -342,13 +342,8 @@ void SetConnectedComponents(const std::vector<std::vector<int>>& polygons,
 }
 
 template <typename ... VertexData>
-int _SurfaceTrimmerExecute(const char *In, const char *Out)
+int _SurfaceTrimmerExecute(const char *In, const char *Out, SurfaceTrimmerParameters params)
 {
-    const int Smooth = 5;
-    const int Trim = 0;
-    const float IslandAreaRatio = 0.001;
-    const bool PolygonMesh = false;
-    
     typedef MultiPointStreamData<float, PointStreamValue<float>, PointStreamNormal<float, 3>, PointStreamColor<float>> PLYCheckingVertexData;
     typedef PlyVertexWithData<float, 3, PLYCheckingVertexData> PLYCheckingVertex;
     bool readFlags[PLYCheckingVertex::PlyReadNum];
@@ -373,7 +368,7 @@ int _SurfaceTrimmerExecute(const char *In, const char *Out)
     std::vector<std::string> comments;
     PlyReadPolygons<Vertex>(In, vertices, polygons, Vertex::PlyReadProperties(), Vertex::PlyReadNum, ft, comments);
     
-    for (int i = 0; i < Smooth; i++) {
+    for (int i = 0; i < params.Smooth; i++) {
         SmoothValues(vertices, polygons);
     }
     
@@ -391,10 +386,10 @@ int _SurfaceTrimmerExecute(const char *In, const char *Out)
     messageWriter(comments, "*********************************************\n");
     
     for (size_t i = 0; i < polygons.size(); i++) {
-        SplitPolygon(polygons[i], vertices, &ltPolygons, &gtPolygons, &ltFlags, &gtFlags, vertexTable, Trim);
+        SplitPolygon(polygons[i], vertices, &ltPolygons, &gtPolygons, &ltFlags, &gtFlags, vertexTable, params.Trim);
     }
     
-    if (IslandAreaRatio > 0) {
+    if (params.IslandAreaRatio > 0) {
         std::vector<std::vector<int>> _ltPolygons, _gtPolygons;
         std::vector<std::vector<int>> ltComponents, gtComponents;
         SetConnectedComponents(ltPolygons, ltComponents);
@@ -420,7 +415,7 @@ int _SurfaceTrimmerExecute(const char *In, const char *Out)
         }
         
         for (size_t i = 0; i < ltComponents.size(); i++) {
-            if (ltAreas[i] < area * IslandAreaRatio && ltComponentFlags[i]) {
+            if (ltAreas[i] < area * params.IslandAreaRatio && ltComponentFlags[i]) {
                 for (size_t j = 0; j < ltComponents[i].size(); j++) {
                     _gtPolygons.push_back(ltPolygons[ltComponents[i][j]]);
                 }
@@ -433,7 +428,7 @@ int _SurfaceTrimmerExecute(const char *In, const char *Out)
         }
         
         for (size_t i = 0; i < gtComponents.size(); i++) {
-            if (gtAreas[i] < area * IslandAreaRatio && gtComponentFlags[i]) {
+            if (gtAreas[i] < area * params.IslandAreaRatio && gtComponentFlags[i]) {
                 for (size_t j = 0; j < gtComponents[i].size(); j++) {
                     _ltPolygons.push_back(gtPolygons[gtComponents[i][j]]);
                 }
@@ -449,7 +444,7 @@ int _SurfaceTrimmerExecute(const char *In, const char *Out)
         gtPolygons = _gtPolygons;
     }
     
-    if (!PolygonMesh) {
+    if (!params.PolygonMesh) {
         {
             std::vector<std::vector<int>> polys = ltPolygons;
             Triangulate<Vertex>(vertices, ltPolygons, polys);

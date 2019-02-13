@@ -7,3 +7,10 @@
 *.bat
 *.zip
 .vs/*
+
+## Xcode
+*.pbxuser
+!default.pbxuser
+xcuserdata/
+*.xcuserdatad
+*.xccheckout

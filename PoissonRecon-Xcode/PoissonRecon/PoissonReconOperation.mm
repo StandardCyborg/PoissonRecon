@@ -6,13 +6,23 @@
 //  Copyright © 2018 Standard Cyborg. All rights reserved.
 //
 
-#import "PoissonReconOperation.h"
+#import <PoissonRecon/PoissonReconOperation.h>
+#import "Parameters.hpp"
 #import "ExecuteEntryFunctions.hpp"
 
 using namespace std;
 
-// extern int PoissonRecon_main(int argc, char *argv[]);
-// extern int SurfaceTrimmer_main(int argc, const char *argv[]);
+static float fclampf(float value, float min, float max) {
+    return fmaxf(fminf(value, max), min);
+}
+
+static float remapAndClamp(float value, float originalMin, float originalMax, float newMin, float newMax) {
+    float shiftedOriginal = value - originalMin;
+    float scaled = shiftedOriginal * (newMax - newMin) / (originalMax - originalMin);
+    float shiftedNew = scaled + newMin;
+    
+    return fclampf(shiftedNew, newMin, newMax);
+}
 
 @implementation PoissonReconOperation {
     NSString *_inputFilePath;
@@ -26,21 +36,31 @@ using namespace std;
     if (self) {
         _inputFilePath = inputPath;
         _outputFilePath = outputPath;
+        
+        _resolution = 5;
+        _smoothness = 2;
     }
     return self;
 }
 
 - (void)main
 {
-    // const char *workingPath = [[[NSBundle bundleForClass:[self class]] bundlePath] UTF8String];
-    // const char *poissonOutputPath = [_outputFilePath UTF8String];
     const char *inputPath = [_inputFilePath UTF8String];
-    NSString *poissonOutputPathString = [NSTemporaryDirectory() stringByAppendingPathComponent:@"poisson.ply"];
-    const char *poissonOutputPath = [poissonOutputPathString UTF8String];
+    NSString *tempPoissonOutputPathString = [NSTemporaryDirectory() stringByAppendingFormat:@"/poisson-%@.ply", [[NSUUID UUID] UUIDString]];
+    const char *poissonOutputPath = [tempPoissonOutputPathString UTF8String];
     const char *surfaceTrimmerOutputPath = [_outputFilePath UTF8String];
     
-    PoissonReconExecute(inputPath, poissonOutputPath);
-    SurfaceTrimmerExecute(poissonOutputPath, surfaceTrimmerOutputPath);
+    PoissonReconParameters poissonParams;
+    poissonParams.Depth = remapAndClamp(_resolution, 1, 10, 4, 14);
+    poissonParams.SamplesPerNode = remapAndClamp(_smoothness, 1, 10, 1, 15);
+    
+    SurfaceTrimmerParameters surfaceTrimmerParams;
+    // The defaults are all fine for this one, so not exposing any knobs
+    
+    PoissonReconExecute(inputPath, poissonOutputPath, poissonParams);
+    SurfaceTrimmerExecute(poissonOutputPath, surfaceTrimmerOutputPath, surfaceTrimmerParams);
+    
+    [[NSFileManager defaultManager] removeItemAtPath:tempPoissonOutputPathString error:NULL];
 }
 
 @end

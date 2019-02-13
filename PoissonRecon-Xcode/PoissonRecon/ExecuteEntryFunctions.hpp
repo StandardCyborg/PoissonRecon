@@ -9,9 +9,11 @@
 #ifndef ExecuteEntryFunctions_hpp
 #define ExecuteEntryFunctions_hpp
 
-extern void PoissonReconExecute(const char *inputFilePath, const char *outputFilePath);
+#include "Parameters.hpp"
+
+extern void PoissonReconExecute(const char *inputFilePath, const char *outputFilePath, PoissonReconParameters parameters);
 
 /** Returns 0 on success, nonzero on error */
-extern int SurfaceTrimmerExecute(const char* inputFilePath, const char* outputFilePath);
+extern int SurfaceTrimmerExecute(const char* inputFilePath, const char* outputFilePath, SurfaceTrimmerParameters parameters);
 
 #endif /* ExecuteEntryFunctions_hpp */

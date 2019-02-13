@@ -199,17 +199,8 @@ void ExtractMesh(UIntPack<FEMSigs ...>,
 
 // Called templated as Execute<float, PointStreamColor<float>>(argc, argv, IsotropicUIntPack<3, FEMDegreeAndBType<1, BOUNDARY_NEUMANN>::Signature>())
 template<typename ... SampleData, unsigned int ... FEMSigs>
-void _PoissonReconExecute(const char *In, const char *Out, UIntPack<FEMSigs ...>)
+void _PoissonReconExecute(const char *In, const char *Out, PoissonReconParameters params, UIntPack<FEMSigs ...>)
 {
-    const int BaseDepth = 0;
-    const int BaseVCycles = 1;
-    const float CGSolverAccuracy = 0.001;
-    const int Depth = 8;
-    const int FullDepth = 5;
-    const int Iters = 8;
-    const int PointWeight = 2;
-    const float SamplesPerNode = 1.5;
-    const float Scale = 1.1;
     const char *ext = "ply";
     
     typedef UIntPack<FEMSigs ...> Sigs;
@@ -263,7 +254,7 @@ void _PoissonReconExecute(const char *In, const char *Out, UIntPack<FEMSigs ...>
         
         typename TotalPointSampleData::Transform _xForm(xForm);
         XInputPointStream _pointStream([&](Point<float, 3>& p, TotalPointSampleData& d){ p = xForm * p, d = _xForm(d); }, *pointStream);
-        xForm = Scale > 0 ? GetPointXForm(_pointStream, (float)Scale) * xForm : xForm;
+        xForm = params.Scale > 0 ? GetPointXForm(_pointStream, (float)params.Scale) * xForm : xForm;
         {
             typename TotalPointSampleData::Transform _xForm(xForm);
             XInputPointStream _pointStream([&](Point<float, 3>& p, TotalPointSampleData& d){ p = xForm*p, d = _xForm(d); }, *pointStream);
@@ -278,7 +269,7 @@ void _PoissonReconExecute(const char *In, const char *Out, UIntPack<FEMSigs ...>
                 return 1.0f;
             };
             
-            pointCount = FEMTreeInitializer<3, float>::template Initialize<TotalPointSampleData>(tree.spaceRoot(), _pointStream, Depth, *samples, *sampleData, true, tree.nodeAllocator, tree.initializer(), ProcessData);
+            pointCount = FEMTreeInitializer<3, float>::template Initialize<TotalPointSampleData>(tree.spaceRoot(), _pointStream, params.Depth, *samples, *sampleData, true, tree.nodeAllocator, tree.initializer(), ProcessData);
         }
         
         delete pointStream;
@@ -286,19 +277,19 @@ void _PoissonReconExecute(const char *In, const char *Out, UIntPack<FEMSigs ...>
         messageWriter("Input Points / Samples: %d / %d\n", pointCount, samples->size());
     }
     
-    int kernelDepth = Depth - 2;
+    int kernelDepth = params.Depth - 2;
     
     DenseNodeData<float, Sigs> solution;
     {
         DenseNodeData<float, Sigs> constraints;
         InterpolationInfo* iInfo = NULL;
-        int solveDepth = Depth;
+        int solveDepth = params.Depth;
         
         tree.resetNodeIndices();
         
         // Get the kernel density estimator
         {
-            density = tree.template setDensityEstimator<WEIGHT_DEGREE>(*samples, kernelDepth, SamplesPerNode, 1);
+            density = tree.template setDensityEstimator<WEIGHT_DEGREE>(*samples, kernelDepth, params.SamplesPerNode, 1);
         }
         
         // Transform the Hermite samples into a vector field
@@ -313,7 +304,7 @@ void _PoissonReconExecute(const char *In, const char *Out, UIntPack<FEMSigs ...>
         // Trim the tree and prepare for multigrid
         {
             constexpr int MAX_DEGREE = NORMAL_DEGREE> Degrees::Max() ? NORMAL_DEGREE : Degrees::Max();
-            tree.template finalizeForMultigrid<MAX_DEGREE>(FullDepth, typename FEMTree<3, float>::template HasNormalDataFunctor<NormalSigs>(*normalInfo), normalInfo, density);
+            tree.template finalizeForMultigrid<MAX_DEGREE>(params.FullDepth, typename FEMTree<3, float>::template HasNormalDataFunctor<NormalSigs>(*normalInfo), normalInfo, density);
         }
         
         // Add the FEM constraints
@@ -341,13 +332,13 @@ void _PoissonReconExecute(const char *In, const char *Out, UIntPack<FEMSigs ...>
         delete normalInfo, normalInfo = NULL;
         
         // Add the interpolation constraints
-        if (PointWeight > 0)
+        if (params.PointWeight > 0)
         {
             iInfo = FEMTree<3, float>::template InitializeApproximatePointInterpolationInfo<float, 0>(
                                                                                                       tree,
                                                                                                       *samples,
-                                                                                                      ConstraintDual(targetValue, (float)PointWeight * pointWeightSum),
-                                                                                                      SystemDual((float)PointWeight * pointWeightSum),
+                                                                                                      ConstraintDual(targetValue, (float)params.PointWeight * pointWeightSum),
+                                                                                                      SystemDual((float)params.PointWeight * pointWeightSum),
                                                                                                       true,
                                                                                                       1);
             tree.addInterpolationConstraints(constraints, solveDepth, *iInfo);
@@ -361,14 +352,14 @@ void _PoissonReconExecute(const char *In, const char *Out, UIntPack<FEMSigs ...>
             sInfo.cgDepth = 0;
             sInfo.cascadic = true;
             sInfo.vCycles = 1;
-            sInfo.iters = Iters;
-            sInfo.cgAccuracy = CGSolverAccuracy;
+            sInfo.iters = params.Iters;
+            sInfo.cgAccuracy = params.CGSolverAccuracy;
             sInfo.verbose = false;
             sInfo.showResidual = false;
             sInfo.showGlobalResidual = SHOW_GLOBAL_RESIDUAL_NONE;
             sInfo.sliceBlockSize = 1;
-            sInfo.baseDepth = BaseDepth;
-            sInfo.baseVCycles = BaseVCycles;
+            sInfo.baseDepth = params.BaseDepth;
+            sInfo.baseVCycles = params.BaseVCycles;
             
             typename FEMIntegrator::template System<Sigs, IsotropicUIntPack<3, 1>> F({ 0.0, 1.0 });
             solution = tree.solveSystem(Sigs(), F, constraints, solveDepth, sInfo, iInfo);
