@@ -35,7 +35,8 @@
 		7619BF82220E243D003B2F5C /* PointStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 7619BF4E220E243D003B2F5C /* PointStream.h */; };
 		7619BF83220E243D003B2F5C /* PointStreamData.h in Headers */ = {isa = PBXBuildFile; fileRef = 7619BF4F220E243D003B2F5C /* PointStreamData.h */; };
 		7619BF84220E243D003B2F5C /* Factor.h in Headers */ = {isa = PBXBuildFile; fileRef = 7619BF50220E243D003B2F5C /* Factor.h */; };
-		7664E3D62213433100BC5377 /* PoissonReconExecute.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7664E3D52213433100BC5377 /* PoissonReconExecute.cpp */; };
+		762D5A942214ACBA0066EE74 /* ExecuteEntryFunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 762D5A922214ACBA0066EE74 /* ExecuteEntryFunctions.cpp */; };
+		762D5A952214ACBA0066EE74 /* ExecuteEntryFunctions.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 762D5A932214ACBA0066EE74 /* ExecuteEntryFunctions.hpp */; };
 		7664E3D82213436600BC5377 /* PoissonReconExecute.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7664E3D72213436600BC5377 /* PoissonReconExecute.hpp */; };
 		7664E3DF22138EE600BC5377 /* SurfaceTrimmerExecute.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7664E3DD22138EE600BC5377 /* SurfaceTrimmerExecute.hpp */; };
 		76734EC1221273D9008CFD95 /* jmemmgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E86221273D9008CFD95 /* jmemmgr.cpp */; };
@@ -226,9 +227,9 @@
 		7619BF4F220E243D003B2F5C /* PointStreamData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PointStreamData.h; sourceTree = "<group>"; };
 		7619BF50220E243D003B2F5C /* Factor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Factor.h; sourceTree = "<group>"; };
 		7619BF51220E243D003B2F5C /* FEMTree.Evaluation.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FEMTree.Evaluation.inl; sourceTree = "<group>"; };
-		7664E3D52213433100BC5377 /* PoissonReconExecute.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PoissonReconExecute.cpp; sourceTree = "<group>"; };
+		762D5A922214ACBA0066EE74 /* ExecuteEntryFunctions.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ExecuteEntryFunctions.cpp; sourceTree = "<group>"; };
+		762D5A932214ACBA0066EE74 /* ExecuteEntryFunctions.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ExecuteEntryFunctions.hpp; sourceTree = "<group>"; };
 		7664E3D72213436600BC5377 /* PoissonReconExecute.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PoissonReconExecute.hpp; sourceTree = "<group>"; };
-		7664E3DC22138EE600BC5377 /* SurfaceTrimmerExecute.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SurfaceTrimmerExecute.cpp; sourceTree = "<group>"; };
 		7664E3DD22138EE600BC5377 /* SurfaceTrimmerExecute.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SurfaceTrimmerExecute.hpp; sourceTree = "<group>"; };
 		76734E86221273D9008CFD95 /* jmemmgr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jmemmgr.cpp; sourceTree = "<group>"; };
 		76734E87221273D9008CFD95 /* jdhuff.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jdhuff.cpp; sourceTree = "<group>"; };
@@ -536,10 +537,10 @@
 				7691CAE820927C200029084C /* PoissonRecon.h */,
 				7691CB1020927E6B0029084C /* PoissonReconOperation.h */,
 				7691CB1120927E6B0029084C /* PoissonReconOperation.mm */,
+				762D5A932214ACBA0066EE74 /* ExecuteEntryFunctions.hpp */,
+				762D5A922214ACBA0066EE74 /* ExecuteEntryFunctions.cpp */,
 				7664E3D72213436600BC5377 /* PoissonReconExecute.hpp */,
-				7664E3D52213433100BC5377 /* PoissonReconExecute.cpp */,
 				7664E3DD22138EE600BC5377 /* SurfaceTrimmerExecute.hpp */,
-				7664E3DC22138EE600BC5377 /* SurfaceTrimmerExecute.cpp */,
 			);
 			path = PoissonRecon;
 			sourceTree = "<group>";
@@ -653,6 +654,7 @@
 				76734F5E22127434008CFD95 /* zconf.h in Headers */,
 				76734F5222127434008CFD95 /* deflate.h in Headers */,
 				76734EDF221273D9008CFD95 /* jmemsys.h in Headers */,
+				762D5A952214ACBA0066EE74 /* ExecuteEntryFunctions.hpp in Headers */,
 				76734EFA221273D9008CFD95 /* jpegint.h in Headers */,
 				76734F1B221273F8008CFD95 /* png.h in Headers */,
 				7691CB1220927E6B0029084C /* PoissonReconOperation.h in Headers */,
@@ -853,13 +855,13 @@
 				7619BF52220E243D003B2F5C /* PlyFile.cpp in Sources */,
 				76734F22221273F8008CFD95 /* pngmem.c in Sources */,
 				76734F5922127434008CFD95 /* infcodes.c in Sources */,
+				762D5A942214ACBA0066EE74 /* ExecuteEntryFunctions.cpp in Sources */,
 				76734EC8221273D9008CFD95 /* jidctflt.cpp in Sources */,
 				76734F1D221273F8008CFD95 /* pngwtran.c in Sources */,
 				76734EF2221273D9008CFD95 /* jdmerge.cpp in Sources */,
 				76734F24221273F8008CFD95 /* png.c in Sources */,
 				76734EF3221273D9008CFD95 /* jerror.cpp in Sources */,
 				76734ECF221273D9008CFD95 /* jdatadst.cpp in Sources */,
-				7664E3D62213433100BC5377 /* PoissonReconExecute.cpp in Sources */,
 				76734ED7221273D9008CFD95 /* jdapimin.cpp in Sources */,
 				76734EE5221273D9008CFD95 /* jchuff.cpp in Sources */,
 				76734EE4221273D9008CFD95 /* jdmarker.cpp in Sources */,

@@ -7,8 +7,7 @@
 //
 
 #import "PoissonReconOperation.h"
-#import "PoissonReconExecute.hpp"
-#import "SurfaceTrimmerExecute.hpp"
+#import "ExecuteEntryFunctions.hpp"
 
 using namespace std;
 
@@ -40,62 +39,8 @@ using namespace std;
     const char *poissonOutputPath = [poissonOutputPathString UTF8String];
     const char *surfaceTrimmerOutputPath = [_outputFilePath UTF8String];
     
-    // [self _runPoissonReconInWorkingPath:workingPath
-    //                           inputPath:inputPath
-    //                          outputPath:poissonOutputPath];
-    //
-    // [self _runSurfaceTrimmerInWorkingPath:workingPath
-    //                             inputPath:poissonOutputPath
-    //                            outputPath:surfaceTrimmerOutputPath];
-    // 
-    // [[NSFileManager defaultManager] removeItemAtPath:poissonOutputPathString error:NULL];
-    
     PoissonReconExecute(inputPath, poissonOutputPath);
     SurfaceTrimmerExecute(poissonOutputPath, surfaceTrimmerOutputPath);
 }
-
-/*
-- (void)_runPoissonReconInWorkingPath:(const char *)workingPath
-                            inputPath:(const char *)inputPath
-                           outputPath:(const char *)outputPath
-{
-    // Example usage: Bin/Linux/PoissonRecon --in /tmp/PointCloud.ply --out /tmp/PoissonRecon.ply --colors --normals --density --depth 12
-    const char *argv[] = {
-        workingPath,
-        "--in",
-        inputPath,
-        "--out",
-        outputPath,
-        "--colors",
-        "--normals",
-        "--density",
-        "--ascii"
-    };
-    int argc = sizeof(argv) / sizeof(const char *);
-    
-    PoissonRecon_main(argc, (char **)argv);
-}
-*/
-
-/*
-- (void)_runSurfaceTrimmerInWorkingPath:(const char *)workingPath
-                              inputPath:(const char *)inputPath
-                             outputPath:(const char *)outputPath
-{
-    // Example usage: Bin/Linux/SurfaceTrimmer --in /tmp/PoissonRecon.ply --out /tmp/SurfaceTrimmer.ply --trim 5
-    const char *argv[] = {
-        workingPath,
-        "--in",
-        inputPath,
-        "--out",
-        outputPath,
-        "--trim"
-    };
-    int argc = 8;
-    int argc = sizeof(argv) / sizeof(const char *);
- 
-    SurfaceTrimmer_main(argc, argv);
-}
-*/
 
 @end
