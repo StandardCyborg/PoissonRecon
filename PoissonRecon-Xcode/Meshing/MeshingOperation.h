@@ -1,6 +1,6 @@
 //
-//  PoissonReconOperation.h
-//  PoissonRecon
+//  MeshingOperation.h
+//  Meshing
 //
 //  Created by Aaron Thompson on 4/26/18.
 //  Copyright © 2018 Standard Cyborg. All rights reserved.
@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 /** Reconstructs a mesh from a point cloud and trims the edges on the result. */
-@interface PoissonReconOperation : NSOperation
+@interface MeshingOperation : NSOperation
 
 - (instancetype)init NS_UNAVAILABLE;
 
@@ -27,5 +27,8 @@
     Range is 1-10, default is 2.
  */
 @property (nonatomic) int smoothness;
+
+/** The number of threads on which the algorithm will be run. Default is 1. */
+@property (nonatomic) int threadCount;
 
 @end

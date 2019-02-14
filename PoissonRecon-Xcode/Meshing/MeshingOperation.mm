@@ -1,12 +1,12 @@
 //
-//  PoissonReconOperation.mm
-//  PoissonRecon
+//  MeshingOperation.mm
+//  Meshing
 //
 //  Created by Aaron Thompson on 4/26/18.
 //  Copyright © 2018 Standard Cyborg. All rights reserved.
 //
 
-#import <PoissonRecon/PoissonReconOperation.h>
+#import <Meshing/MeshingOperation.h>
 #import "Parameters.hpp"
 #import "ExecuteEntryFunctions.hpp"
 
@@ -24,7 +24,7 @@ static float remapAndClamp(float value, float originalMin, float originalMax, fl
     return fclampf(shiftedNew, newMin, newMax);
 }
 
-@implementation PoissonReconOperation {
+@implementation MeshingOperation {
     NSString *_inputFilePath;
     NSString *_outputFilePath;
 }
@@ -51,8 +51,9 @@ static float remapAndClamp(float value, float originalMin, float originalMax, fl
     const char *surfaceTrimmerOutputPath = [_outputFilePath UTF8String];
     
     PoissonReconParameters poissonParams;
-    poissonParams.Depth = remapAndClamp(_resolution, 1, 10, 4, 14);
-    poissonParams.SamplesPerNode = remapAndClamp(_smoothness, 1, 10, 1, 15);
+    poissonParams.Depth = (int)remapAndClamp(_resolution, 1, 10, 4, 14);
+    poissonParams.SamplesPerNode = (int)remapAndClamp(_smoothness, 1, 10, 1, 15);
+    poissonParams.Threads = MAX(1, _threadCount);
     
     SurfaceTrimmerParameters surfaceTrimmerParams;
     // The defaults are all fine for this one, so not exposing any knobs

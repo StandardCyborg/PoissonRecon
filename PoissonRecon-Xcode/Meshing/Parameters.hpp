@@ -19,6 +19,7 @@ struct PoissonReconParameters {
     int PointWeight = 2;
     float SamplesPerNode = 1.5;
     float Scale = 1.1;
+    int Threads = 1;
 };
 
 struct SurfaceTrimmerParameters {

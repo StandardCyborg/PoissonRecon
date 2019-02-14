@@ -201,8 +201,6 @@ void ExtractMesh(UIntPack<FEMSigs ...>,
 template<typename ... SampleData, unsigned int ... FEMSigs>
 void _PoissonReconExecute(const char *In, const char *Out, PoissonReconParameters params, UIntPack<FEMSigs ...>)
 {
-    const char *ext = "ply";
-    
     typedef UIntPack<FEMSigs ...> Sigs;
     typedef UIntPack<FEMSignature<FEMSigs>::Degree ...> Degrees;
     typedef UIntPack<FEMDegreeAndBType<NORMAL_DEGREE, DerivativeBoundary<FEMSignature<FEMSigs>::BType, 1>::BType>::Signature ...> NormalSigs;
@@ -237,20 +235,15 @@ void _PoissonReconExecute(const char *In, const char *Out, PoissonReconParameter
     
     // Read in the samples (and color data)
     {
-        InputPointStream* pointStream;
         sampleData = new std::vector<TotalPointSampleData>();
         std::vector<std::pair<Point<float, 3>, TotalPointSampleData>> inCorePoints;
-        if (!strcasecmp(ext, "ply")) {
-            pointStream = new PLYInputPointStreamWithData  <float, 3, TotalPointSampleData>(
-                                                                                            In,
-                                                                                            TotalPointSampleData::PlyReadProperties(),
-                                                                                            TotalPointSampleData::PlyReadNum,
-                                                                                            TotalPointSampleData::ValidPlyReadProperties);
-        } else {
-            pointStream = new ASCIIInputPointStreamWithData<float, 3, TotalPointSampleData>(
-                                                                                            In,
-                                                                                            TotalPointSampleData::ReadASCII);
-        }
+        InputPointStream* pointStream = new PLYInputPointStreamWithData<float, 3, TotalPointSampleData>
+        (
+            In,
+            TotalPointSampleData::PlyReadProperties(),
+            TotalPointSampleData::PlyReadNum,
+            TotalPointSampleData::ValidPlyReadProperties
+        );
         
         typename TotalPointSampleData::Transform _xForm(xForm);
         XInputPointStream _pointStream([&](Point<float, 3>& p, TotalPointSampleData& d){ p = xForm * p, d = _xForm(d); }, *pointStream);
@@ -296,8 +289,13 @@ void _PoissonReconExecute(const char *In, const char *Out, PoissonReconParameter
         {
             normalInfo = new SparseNodeData<Point<float, 3>, NormalSigs>();
             *normalInfo = tree.setNormalField(NormalSigs(), *samples, *sampleData, density, pointWeightSum);
-#pragma omp parallel for
-            for (int i = 0; i < normalInfo->size(); i++) { (*normalInfo)[i] *= -1.0f; }
+            
+            #pragma omp parallel for
+            for (int i = 0; i < normalInfo->size(); i++)
+            {
+                (*normalInfo)[i] *= -1.0f;
+            }
+            
             messageWriter("Point weight / Estimated Area: %g / %g\n", pointWeightSum, pointCount * pointWeightSum);
         }
         
@@ -370,7 +368,8 @@ void _PoissonReconExecute(const char *In, const char *Out, PoissonReconParameter
     {
         double valueSum = 0, weightSum = 0;
         typename FEMTree<3, float>::template MultiThreadedEvaluator<Sigs, 0> evaluator(&tree, solution);
-#pragma omp parallel for reduction(+ : valueSum, weightSum)
+        
+        #pragma omp parallel for reduction(+ : valueSum, weightSum)
         for (int j = 0; j < samples->size(); j++)
         {
             ProjectiveData<Point<float, 3>, float>& sample = (*samples)[j].sample;

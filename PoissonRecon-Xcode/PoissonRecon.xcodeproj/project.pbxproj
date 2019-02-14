@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		760D863622128080008E1458 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 760D863522128080008E1458 /* main.cpp */; };
 		7619BF52220E243D003B2F5C /* PlyFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7619BF1E220E243A003B2F5C /* PlyFile.cpp */; };
 		7619BF53220E243D003B2F5C /* CmdLineParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 7619BF1F220E243A003B2F5C /* CmdLineParser.h */; };
 		7619BF54220E243D003B2F5C /* Image.h in Headers */ = {isa = PBXBuildFile; fileRef = 7619BF20220E243B003B2F5C /* Image.h */; };
@@ -142,11 +141,11 @@
 		76734F5C22127434008CFD95 /* inffast.c in Sources */ = {isa = PBXBuildFile; fileRef = 76734F4122127434008CFD95 /* inffast.c */; };
 		76734F5D22127434008CFD95 /* adler32.c in Sources */ = {isa = PBXBuildFile; fileRef = 76734F4222127434008CFD95 /* adler32.c */; };
 		76734F5E22127434008CFD95 /* zconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 76734F4322127434008CFD95 /* zconf.h */; };
-		7691CAEF20927C200029084C /* PoissonRecon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7691CAE520927C200029084C /* PoissonRecon.framework */; };
-		7691CAF420927C200029084C /* PoissonReconTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7691CAF320927C200029084C /* PoissonReconTests.m */; };
-		7691CAF620927C200029084C /* PoissonRecon.h in Headers */ = {isa = PBXBuildFile; fileRef = 7691CAE820927C200029084C /* PoissonRecon.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7691CB1220927E6B0029084C /* PoissonReconOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7691CB1020927E6B0029084C /* PoissonReconOperation.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7691CB1320927E6B0029084C /* PoissonReconOperation.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7691CB1120927E6B0029084C /* PoissonReconOperation.mm */; };
+		7691CAEF20927C200029084C /* Meshing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7691CAE520927C200029084C /* Meshing.framework */; };
+		7691CAF420927C200029084C /* MeshingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7691CAF320927C200029084C /* MeshingTests.m */; };
+		7691CAF620927C200029084C /* Meshing.h in Headers */ = {isa = PBXBuildFile; fileRef = 7691CAE820927C200029084C /* Meshing.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7691CB1220927E6B0029084C /* MeshingOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7691CB1020927E6B0029084C /* MeshingOperation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7691CB1320927E6B0029084C /* MeshingOperation.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7691CB1120927E6B0029084C /* MeshingOperation.mm */; };
 		76EBE55D20A2769C0052126A /* app_scan.ply in Resources */ = {isa = PBXBuildFile; fileRef = 76EBE55C20A2769C0052126A /* app_scan.ply */; };
 		76F402CF20A285DF002FE190 /* app_scan.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 76F402CE20A285DF002FE190 /* app_scan.jpg */; };
 /* End PBXBuildFile section */
@@ -161,22 +160,8 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		760D863122128080008E1458 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		760D862D22127FE9008E1458 /* PoissonRecon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PoissonRecon.cpp; sourceTree = "<group>"; };
-		760D863322128080008E1458 /* poisson_recon */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = poisson_recon; sourceTree = BUILT_PRODUCTS_DIR; };
-		760D863522128080008E1458 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		760D863A2212869C008E1458 /* SurfaceTrimmer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SurfaceTrimmer.cpp; sourceTree = "<group>"; };
 		7619BF1E220E243A003B2F5C /* PlyFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlyFile.cpp; sourceTree = "<group>"; };
 		7619BF1F220E243A003B2F5C /* CmdLineParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CmdLineParser.h; sourceTree = "<group>"; };
@@ -335,26 +320,19 @@
 		76734F4122127434008CFD95 /* inffast.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = inffast.c; sourceTree = "<group>"; };
 		76734F4222127434008CFD95 /* adler32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = adler32.c; sourceTree = "<group>"; };
 		76734F4322127434008CFD95 /* zconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zconf.h; sourceTree = "<group>"; };
-		7691CAE520927C200029084C /* PoissonRecon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PoissonRecon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		7691CAE820927C200029084C /* PoissonRecon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PoissonRecon.h; sourceTree = "<group>"; };
+		7691CAE520927C200029084C /* Meshing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Meshing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7691CAE820927C200029084C /* Meshing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Meshing.h; sourceTree = "<group>"; };
 		7691CAE920927C200029084C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7691CAEE20927C200029084C /* PoissonReconTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PoissonReconTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		7691CAF320927C200029084C /* PoissonReconTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PoissonReconTests.m; sourceTree = "<group>"; };
+		7691CAEE20927C200029084C /* MeshingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MeshingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7691CAF320927C200029084C /* MeshingTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MeshingTests.m; sourceTree = "<group>"; };
 		7691CAF520927C200029084C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7691CB1020927E6B0029084C /* PoissonReconOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PoissonReconOperation.h; sourceTree = "<group>"; };
-		7691CB1120927E6B0029084C /* PoissonReconOperation.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PoissonReconOperation.mm; sourceTree = "<group>"; };
+		7691CB1020927E6B0029084C /* MeshingOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MeshingOperation.h; sourceTree = "<group>"; };
+		7691CB1120927E6B0029084C /* MeshingOperation.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MeshingOperation.mm; sourceTree = "<group>"; };
 		76EBE55C20A2769C0052126A /* app_scan.ply */ = {isa = PBXFileReference; lastKnownFileType = file; path = app_scan.ply; sourceTree = "<group>"; };
 		76F402CE20A285DF002FE190 /* app_scan.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = app_scan.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		760D863022128080008E1458 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		7691CAE120927C200029084C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -366,21 +344,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7691CAEF20927C200029084C /* PoissonRecon.framework in Frameworks */,
+				7691CAEF20927C200029084C /* Meshing.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		760D863422128080008E1458 /* poisson_recon */ = {
-			isa = PBXGroup;
-			children = (
-				760D863522128080008E1458 /* main.cpp */,
-			);
-			path = poisson_recon;
-			sourceTree = "<group>";
-		};
 		76734E84221273D9008CFD95 /* JPEG */ = {
 			isa = PBXGroup;
 			children = (
@@ -514,9 +484,8 @@
 				76734EFB221273F8008CFD95 /* PNG */,
 				76734E84221273D9008CFD95 /* JPEG */,
 				76734F2822127434008CFD95 /* ZLIB */,
-				7691CAE720927C200029084C /* PoissonRecon */,
-				7691CAF220927C200029084C /* PoissonReconTests */,
-				760D863422128080008E1458 /* poisson_recon */,
+				7691CAE720927C200029084C /* Meshing */,
+				7691CAF220927C200029084C /* MeshingTests */,
 				7691CAE620927C200029084C /* Products */,
 				76EBE55520A2611E0052126A /* Frameworks */,
 			);
@@ -525,38 +494,37 @@
 		7691CAE620927C200029084C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7691CAE520927C200029084C /* PoissonRecon.framework */,
-				7691CAEE20927C200029084C /* PoissonReconTests.xctest */,
-				760D863322128080008E1458 /* poisson_recon */,
+				7691CAE520927C200029084C /* Meshing.framework */,
+				7691CAEE20927C200029084C /* MeshingTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		7691CAE720927C200029084C /* PoissonRecon */ = {
+		7691CAE720927C200029084C /* Meshing */ = {
 			isa = PBXGroup;
 			children = (
 				7691CAE920927C200029084C /* Info.plist */,
-				7691CAE820927C200029084C /* PoissonRecon.h */,
+				7691CAE820927C200029084C /* Meshing.h */,
 				762D5A992214BCC50066EE74 /* Parameters.hpp */,
-				7691CB1020927E6B0029084C /* PoissonReconOperation.h */,
-				7691CB1120927E6B0029084C /* PoissonReconOperation.mm */,
+				7691CB1020927E6B0029084C /* MeshingOperation.h */,
+				7691CB1120927E6B0029084C /* MeshingOperation.mm */,
 				762D5A932214ACBA0066EE74 /* ExecuteEntryFunctions.hpp */,
 				762D5A922214ACBA0066EE74 /* ExecuteEntryFunctions.cpp */,
 				7664E3D72213436600BC5377 /* PoissonReconExecute.hpp */,
 				7664E3DD22138EE600BC5377 /* SurfaceTrimmerExecute.hpp */,
 			);
-			path = PoissonRecon;
+			path = Meshing;
 			sourceTree = "<group>";
 		};
-		7691CAF220927C200029084C /* PoissonReconTests */ = {
+		7691CAF220927C200029084C /* MeshingTests */ = {
 			isa = PBXGroup;
 			children = (
 				76EBE55C20A2769C0052126A /* app_scan.ply */,
 				76F402CE20A285DF002FE190 /* app_scan.jpg */,
-				7691CAF320927C200029084C /* PoissonReconTests.m */,
+				7691CAF320927C200029084C /* MeshingTests.m */,
 				7691CAF520927C200029084C /* Info.plist */,
 			);
-			path = PoissonReconTests;
+			path = MeshingTests;
 			sourceTree = "<group>";
 		};
 		76EBE4FC20A25B870052126A /* Src */ = {
@@ -661,7 +629,7 @@
 				762D5A952214ACBA0066EE74 /* ExecuteEntryFunctions.hpp in Headers */,
 				76734EFA221273D9008CFD95 /* jpegint.h in Headers */,
 				76734F1B221273F8008CFD95 /* png.h in Headers */,
-				7691CB1220927E6B0029084C /* PoissonReconOperation.h in Headers */,
+				7691CB1220927E6B0029084C /* MeshingOperation.h in Headers */,
 				7619BF53220E243D003B2F5C /* CmdLineParser.h in Headers */,
 				7619BF67220E243D003B2F5C /* Geometry.h in Headers */,
 				7619BF82220E243D003B2F5C /* PointStream.h in Headers */,
@@ -676,7 +644,7 @@
 				7619BF5E220E243D003B2F5C /* FunctionData.h in Headers */,
 				7619BF84220E243D003B2F5C /* Factor.h in Headers */,
 				76734F1F221273F8008CFD95 /* pngconf.h in Headers */,
-				7691CAF620927C200029084C /* PoissonRecon.h in Headers */,
+				7691CAF620927C200029084C /* Meshing.h in Headers */,
 				76734F5722127434008CFD95 /* infblock.h in Headers */,
 				7619BF5F220E243D003B2F5C /* MAT.h in Headers */,
 				76734EC3221273D9008CFD95 /* jpeglib.h in Headers */,
@@ -696,26 +664,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		760D863222128080008E1458 /* poisson_recon */ = {
+		7691CAE420927C200029084C /* Meshing */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 760D863722128080008E1458 /* Build configuration list for PBXNativeTarget "poisson_recon" */;
-			buildPhases = (
-				760D862F22128080008E1458 /* Sources */,
-				760D863022128080008E1458 /* Frameworks */,
-				760D863122128080008E1458 /* CopyFiles */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = poisson_recon;
-			productName = poisson_recon;
-			productReference = 760D863322128080008E1458 /* poisson_recon */;
-			productType = "com.apple.product-type.tool";
-		};
-		7691CAE420927C200029084C /* PoissonRecon */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 7691CAF920927C200029084C /* Build configuration list for PBXNativeTarget "PoissonRecon" */;
+			buildConfigurationList = 7691CAF920927C200029084C /* Build configuration list for PBXNativeTarget "Meshing" */;
 			buildPhases = (
 				7691CAE020927C200029084C /* Sources */,
 				7691CAE220927C200029084C /* Headers */,
@@ -726,14 +677,14 @@
 			);
 			dependencies = (
 			);
-			name = PoissonRecon;
+			name = Meshing;
 			productName = PoissonRecon;
-			productReference = 7691CAE520927C200029084C /* PoissonRecon.framework */;
+			productReference = 7691CAE520927C200029084C /* Meshing.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		7691CAED20927C200029084C /* PoissonReconTests */ = {
+		7691CAED20927C200029084C /* MeshingTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7691CAFC20927C200029084C /* Build configuration list for PBXNativeTarget "PoissonReconTests" */;
+			buildConfigurationList = 7691CAFC20927C200029084C /* Build configuration list for PBXNativeTarget "MeshingTests" */;
 			buildPhases = (
 				7691CAEA20927C200029084C /* Sources */,
 				7691CAEB20927C200029084C /* Frameworks */,
@@ -744,9 +695,9 @@
 			dependencies = (
 				7691CAF120927C200029084C /* PBXTargetDependency */,
 			);
-			name = PoissonReconTests;
+			name = MeshingTests;
 			productName = PoissonReconTests;
-			productReference = 7691CAEE20927C200029084C /* PoissonReconTests.xctest */;
+			productReference = 7691CAEE20927C200029084C /* MeshingTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -759,9 +710,6 @@
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "Standard Cyborg";
 				TargetAttributes = {
-					760D863222128080008E1458 = {
-						CreatedOnToolsVersion = 10.1;
-					};
 					7691CAE420927C200029084C = {
 						CreatedOnToolsVersion = 9.3;
 					};
@@ -783,9 +731,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				7691CAE420927C200029084C /* PoissonRecon */,
-				7691CAED20927C200029084C /* PoissonReconTests */,
-				760D863222128080008E1458 /* poisson_recon */,
+				7691CAE420927C200029084C /* Meshing */,
+				7691CAED20927C200029084C /* MeshingTests */,
 			);
 		};
 /* End PBXProject section */
@@ -810,14 +757,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		760D862F22128080008E1458 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				760D863622128080008E1458 /* main.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		7691CAE020927C200029084C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -834,7 +773,7 @@
 				76734EC5221273D9008CFD95 /* jcprepct.cpp in Sources */,
 				76734F5122127434008CFD95 /* zutil.c in Sources */,
 				76734EC2221273D9008CFD95 /* jdhuff.cpp in Sources */,
-				7691CB1320927E6B0029084C /* PoissonReconOperation.mm in Sources */,
+				7691CB1320927E6B0029084C /* MeshingOperation.mm in Sources */,
 				76734F5022127434008CFD95 /* crc32.c in Sources */,
 				76734ED2221273D9008CFD95 /* jmemnobs.cpp in Sources */,
 				76734F4E22127434008CFD95 /* infblock.c in Sources */,
@@ -909,7 +848,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7691CAF420927C200029084C /* PoissonReconTests.m in Sources */,
+				7691CAF420927C200029084C /* MeshingTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -918,32 +857,12 @@
 /* Begin PBXTargetDependency section */
 		7691CAF120927C200029084C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 7691CAE420927C200029084C /* PoissonRecon */;
+			target = 7691CAE420927C200029084C /* Meshing */;
 			targetProxy = 7691CAF020927C200029084C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		760D863822128080008E1458 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-			};
-			name = Debug;
-		};
-		760D863922128080008E1458 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-			};
-			name = Release;
-		};
 		7691CAF720927C200029084C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1070,7 +989,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/..";
-				INFOPLIST_FILE = PoissonRecon/Info.plist;
+				INFOPLIST_FILE = Meshing/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1099,7 +1018,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/..";
-				INFOPLIST_FILE = PoissonRecon/Info.plist;
+				INFOPLIST_FILE = Meshing/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1122,13 +1041,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = KAW83335BG;
 				GCC_FAST_MATH = YES;
-				INFOPLIST_FILE = PoissonReconTests/Info.plist;
+				INFOPLIST_FILE = MeshingTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.standardcyborg.PoissonReconTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.standardcyborg.MeshingTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1142,13 +1061,13 @@
 				DEVELOPMENT_TEAM = KAW83335BG;
 				GCC_FAST_MATH = YES;
 				GCC_OPTIMIZATION_LEVEL = fast;
-				INFOPLIST_FILE = PoissonReconTests/Info.plist;
+				INFOPLIST_FILE = MeshingTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.standardcyborg.PoissonReconTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.standardcyborg.MeshingTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1157,15 +1076,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		760D863722128080008E1458 /* Build configuration list for PBXNativeTarget "poisson_recon" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				760D863822128080008E1458 /* Debug */,
-				760D863922128080008E1458 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		7691CADF20927C200029084C /* Build configuration list for PBXProject "PoissonRecon" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1175,7 +1085,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7691CAF920927C200029084C /* Build configuration list for PBXNativeTarget "PoissonRecon" */ = {
+		7691CAF920927C200029084C /* Build configuration list for PBXNativeTarget "Meshing" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7691CAFA20927C200029084C /* Debug */,
@@ -1184,7 +1094,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7691CAFC20927C200029084C /* Build configuration list for PBXNativeTarget "PoissonReconTests" */ = {
+		7691CAFC20927C200029084C /* Build configuration list for PBXNativeTarget "MeshingTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7691CAFD20927C200029084C /* Debug */,
