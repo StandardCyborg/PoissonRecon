@@ -53,7 +53,6 @@ static float remapAndClamp(float value, float originalMin, float originalMax, fl
     PoissonReconParameters poissonParams;
     poissonParams.Depth = (int)remapAndClamp(_resolution, 1, 10, 4, 14);
     poissonParams.SamplesPerNode = (int)remapAndClamp(_smoothness, 1, 10, 1, 15);
-    poissonParams.Threads = MAX(1, _threadCount);
     
     SurfaceTrimmerParameters surfaceTrimmerParams;
     // The defaults are all fine for this one, so not exposing any knobs

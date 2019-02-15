@@ -28,7 +28,4 @@
  */
 @property (nonatomic) int smoothness;
 
-/** The number of threads on which the algorithm will be run. Default is 1. */
-@property (nonatomic) int threadCount;
-
 @end
