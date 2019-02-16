@@ -143,7 +143,7 @@ void ExtractMesh(UIntPack<FEMSigs ...>,
     const bool ASCII = true;
     const int DataX = 32;
     const bool LinearFit = false;
-    const bool NoComments = false;
+    const bool NoComments = true;
     const bool NonManifold = false;
     const bool PolygonMesh = false;
     
@@ -199,7 +199,11 @@ void ExtractMesh(UIntPack<FEMSigs ...>,
 
 // Called templated as Execute<float, PointStreamColor<float>>(argc, argv, IsotropicUIntPack<3, FEMDegreeAndBType<1, BOUNDARY_NEUMANN>::Signature>())
 template<typename ... SampleData, unsigned int ... FEMSigs>
-void _PoissonReconExecute(const char *In, const char *Out, PoissonReconParameters params, UIntPack<FEMSigs ...>)
+void _PoissonReconExecute(const char *In,
+                          const char *Out,
+                          PoissonReconParameters params,
+                          std::function<bool (float)> progressHandler,
+                          UIntPack<FEMSigs ...>)
 {
     typedef UIntPack<FEMSigs ...> Sigs;
     typedef UIntPack<FEMSignature<FEMSigs>::Degree ...> Degrees;
@@ -212,6 +216,7 @@ void _PoissonReconExecute(const char *In, const char *Out, PoissonReconParameter
     typedef InputPointStreamWithData<float, 3, TotalPointSampleData> InputPointStream;
     typedef TransformedInputPointStreamWithData<float, 3, TotalPointSampleData> XInputPointStream;
     MessageWriter messageWriter;
+    messageWriter.echoSTDOUT = false;
     std::vector<std::string> comments;
     
     messageWriter(comments, "*************************************************************\n");
@@ -221,6 +226,8 @@ void _PoissonReconExecute(const char *In, const char *Out, PoissonReconParameter
     XForm<float, 3 + 1> xForm = XForm<float, 3 + 1>::Identity();
     
     float isoValue = 0;
+    
+    if (progressHandler(0) == false) { return; }
     
     FEMTree<3, float> tree(MEMORY_ALLOCATOR_BLOCK_SIZE);
     
@@ -269,6 +276,8 @@ void _PoissonReconExecute(const char *In, const char *Out, PoissonReconParameter
         
         messageWriter("Input Points / Samples: %d / %d\n", pointCount, samples->size());
     }
+    
+    if (progressHandler(0.2) == false) { return; }
     
     int kernelDepth = params.Depth - 2;
     
@@ -329,6 +338,8 @@ void _PoissonReconExecute(const char *In, const char *Out, PoissonReconParameter
         // Free up the normal info
         delete normalInfo, normalInfo = NULL;
         
+        if (progressHandler(0.3) == false) { return; }
+        
         // Add the interpolation constraints
         if (params.PointWeight > 0)
         {
@@ -343,6 +354,8 @@ void _PoissonReconExecute(const char *In, const char *Out, PoissonReconParameter
         }
         
         messageWriter("Leaf Nodes / Active Nodes / Ghost Nodes: %d / %d / %d\n", (int)tree.leaves(), (int)tree.nodes(), (int)tree.ghostNodes());
+        
+        if (progressHandler(0.4) == false) { return; }
         
         // Solve the linear system
         {
@@ -363,6 +376,8 @@ void _PoissonReconExecute(const char *In, const char *Out, PoissonReconParameter
             solution = tree.solveSystem(Sigs(), F, constraints, solveDepth, sInfo, iInfo);
             if (iInfo) delete iInfo, iInfo = NULL;
         }
+        
+        if (progressHandler(0.5) == false) { return; }
     }
     
     {
@@ -383,6 +398,8 @@ void _PoissonReconExecute(const char *In, const char *Out, PoissonReconParameter
         isoValue = (float)(valueSum / weightSum);
         messageWriter("Iso-Value: %e = %g / %g\n", isoValue, valueSum, weightSum);
     }
+    
+    if (progressHandler(0.6) == false) { return; }
     
     typedef PlyVertexWithData<float, 3, MultiPointStreamData<float, PointStreamNormal<float, 3>, PointStreamValue<float>, AdditionalPointSampleData>> Vertex;
     std::function<void (Vertex&, Point<float, 3>, float, TotalPointSampleData)> SetVertex = [](Vertex& v, Point<float, 3> p, float w, TotalPointSampleData d) {
@@ -408,4 +425,6 @@ void _PoissonReconExecute(const char *In, const char *Out, PoissonReconParameter
     
     if (sampleData) { delete sampleData; sampleData = NULL; }
     if (density) { delete density, density = NULL; }
+    
+    progressHandler(1);
 }

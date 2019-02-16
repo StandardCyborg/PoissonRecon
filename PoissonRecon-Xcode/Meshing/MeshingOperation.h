@@ -16,6 +16,11 @@
 - (instancetype)initWithInputFilePath:(NSString *)inputPath
                        outputFilePath:(NSString *)outputPath;
 
+/** Set this to be informed about the progress of the meshing operation.
+    @param progress From 0.0-1.0
+ */
+@property (nonatomic, copy) void (^progressHandler)(float progress);
+
 /** The resolution of the reconstructed mesh vertices.
     Higher values will result in more vertices per meshes,
     and also take longer to reconstruct.

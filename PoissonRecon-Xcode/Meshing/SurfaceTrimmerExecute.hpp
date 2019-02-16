@@ -342,7 +342,10 @@ void SetConnectedComponents(const std::vector<std::vector<int>>& polygons,
 }
 
 template <typename ... VertexData>
-int _SurfaceTrimmerExecute(const char *In, const char *Out, SurfaceTrimmerParameters params)
+int _SurfaceTrimmerExecute(const char *In,
+                           const char *Out,
+                           SurfaceTrimmerParameters params,
+                           std::function<bool (float)> progressHandler)
 {
     typedef MultiPointStreamData<float, PointStreamValue<float>, PointStreamNormal<float, 3>, PointStreamColor<float>> PLYCheckingVertexData;
     typedef PlyVertexWithData<float, 3, PLYCheckingVertexData> PLYCheckingVertex;
@@ -358,7 +361,11 @@ int _SurfaceTrimmerExecute(const char *In, const char *Out, SurfaceTrimmerParame
         return -1;
     }
     
+    if (progressHandler(0) == false) { return -1; }
+    
     MessageWriter messageWriter;
+    messageWriter.echoSTDOUT = false;
+    
     typedef PlyVertexWithData<float, 3, MultiPointStreamData<float, PointStreamValue<float>, VertexData ...>> Vertex;
     float min, max;
     std::vector<Vertex> vertices;
@@ -368,9 +375,13 @@ int _SurfaceTrimmerExecute(const char *In, const char *Out, SurfaceTrimmerParame
     std::vector<std::string> comments;
     PlyReadPolygons<Vertex>(In, vertices, polygons, Vertex::PlyReadProperties(), Vertex::PlyReadNum, ft, comments);
     
+    if (progressHandler(0.1) == false) { return -1; }
+    
     for (int i = 0; i < params.Smooth; i++) {
         SmoothValues(vertices, polygons);
     }
+    
+    if (progressHandler(0.2) == false) { return -1; }
     
     min = max = std::get<0>(vertices[0].data.data).data;
     for (size_t i = 0; i < vertices.size(); i++) {
@@ -388,6 +399,8 @@ int _SurfaceTrimmerExecute(const char *In, const char *Out, SurfaceTrimmerParame
     for (size_t i = 0; i < polygons.size(); i++) {
         SplitPolygon(polygons[i], vertices, &ltPolygons, &gtPolygons, &ltFlags, &gtFlags, vertexTable, params.Trim);
     }
+    
+    if (progressHandler(0.3) == false) { return -1; }
     
     if (params.IslandAreaRatio > 0) {
         std::vector<std::vector<int>> _ltPolygons, _gtPolygons;
@@ -444,6 +457,8 @@ int _SurfaceTrimmerExecute(const char *In, const char *Out, SurfaceTrimmerParame
         gtPolygons = _gtPolygons;
     }
     
+    if (progressHandler(0.6) == false) { return -1; }
+    
     if (!params.PolygonMesh) {
         {
             std::vector<std::vector<int>> polys = ltPolygons;
@@ -457,11 +472,17 @@ int _SurfaceTrimmerExecute(const char *In, const char *Out, SurfaceTrimmerParame
         }
     }
     
+    if (progressHandler(0.8) == false) { return -1; }
+    
     RemoveHangingVertices(vertices, gtPolygons);
+    
+    if (progressHandler(0.9) == false) { return -1; }
     
     if (!PlyWritePolygons<Vertex>(Out, vertices, gtPolygons, Vertex::PlyWriteProperties(), Vertex::PlyWriteNum, ft, comments)) {
         ERROR_OUT("Could not write mesh to: %s", Out);
     }
+    
+    progressHandler(1);
     
     return EXIT_SUCCESS;
 }

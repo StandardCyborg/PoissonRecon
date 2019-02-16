@@ -24,6 +24,8 @@ static float remapAndClamp(float value, float originalMin, float originalMax, fl
     return fclampf(shiftedNew, newMin, newMax);
 }
 
+static const float kPoissonProgressFraction = 0.75;
+
 @implementation MeshingOperation {
     NSString *_inputFilePath;
     NSString *_outputFilePath;
@@ -39,6 +41,8 @@ static float remapAndClamp(float value, float originalMin, float originalMax, fl
         
         _resolution = 5;
         _smoothness = 2;
+        
+        _progressHandler = ^(float){};
     }
     return self;
 }
@@ -57,8 +61,29 @@ static float remapAndClamp(float value, float originalMin, float originalMax, fl
     SurfaceTrimmerParameters surfaceTrimmerParams;
     // The defaults are all fine for this one, so not exposing any knobs
     
-    PoissonReconExecute(inputPath, poissonOutputPath, poissonParams);
-    SurfaceTrimmerExecute(poissonOutputPath, surfaceTrimmerOutputPath, surfaceTrimmerParams);
+    __weak MeshingOperation *weakSelf = self;
+    auto progressHandler = _progressHandler;
+    
+    if (![weakSelf isCancelled]) {
+        PoissonReconExecute(inputPath, poissonOutputPath, poissonParams, [weakSelf, progressHandler](float progress) {
+            float adjustedProgress = remapAndClamp(progress, 0, 1, 0, kPoissonProgressFraction);
+            
+            progressHandler(adjustedProgress);
+            
+            BOOL shouldContinue = [weakSelf isCancelled];
+            return !shouldContinue;
+        });
+    }
+    
+    if (![weakSelf isCancelled]) {
+        SurfaceTrimmerExecute(poissonOutputPath, surfaceTrimmerOutputPath, surfaceTrimmerParams, [weakSelf, progressHandler](float progress) {
+            float adjustedProgress = remapAndClamp(progress, 0, 1, kPoissonProgressFraction, 1);
+            progressHandler(adjustedProgress);
+            
+            BOOL shouldContinue = [weakSelf isCancelled];
+            return !shouldContinue;
+        });
+    }
     
     [[NSFileManager defaultManager] removeItemAtPath:tempPoissonOutputPathString error:NULL];
 }

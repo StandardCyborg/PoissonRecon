@@ -18,16 +18,22 @@
    when linking because it didn't know to name them differently (I think?)
  */
 
-void PoissonReconExecute(const char *inputFilePath, const char *outputFilePath, PoissonReconParameters parameters)
+void PoissonReconExecute(const char *inputFilePath,
+                         const char *outputFilePath,
+                         PoissonReconParameters parameters,
+                         std::function<bool (float)> progressHandler)
 {
     typedef IsotropicUIntPack<3, FEMDegreeAndBType<1, BOUNDARY_NEUMANN>::Signature> FEMSignature;
     typedef PointStreamColor<float> ColorType;
-    _PoissonReconExecute<ColorType>(inputFilePath, outputFilePath, parameters, FEMSignature());
+    _PoissonReconExecute<ColorType>(inputFilePath, outputFilePath, parameters, progressHandler, FEMSignature());
 }
 
-int SurfaceTrimmerExecute(const char* inputFilePath, const char* outputFilePath, SurfaceTrimmerParameters parameters)
+int SurfaceTrimmerExecute(const char* inputFilePath,
+                          const char* outputFilePath,
+                          SurfaceTrimmerParameters parameters,
+                          std::function<bool (float)> progressHandler)
 {
     typedef PointStreamNormal<float, 3> NormalType;
     typedef PointStreamColor<float> ColorType;
-    return _SurfaceTrimmerExecute<NormalType, ColorType>(inputFilePath, outputFilePath, parameters);
+    return _SurfaceTrimmerExecute<NormalType, ColorType>(inputFilePath, outputFilePath, parameters, progressHandler);
 }

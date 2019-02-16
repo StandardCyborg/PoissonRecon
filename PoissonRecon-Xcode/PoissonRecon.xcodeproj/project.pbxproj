@@ -39,52 +39,6 @@
 		762D5A9A2214BCC50066EE74 /* Parameters.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 762D5A992214BCC50066EE74 /* Parameters.hpp */; };
 		762D5AD4221630910066EE74 /* MeshingOperation.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7691CB1120927E6B0029084C /* MeshingOperation.mm */; };
 		762D5AD5221630A00066EE74 /* ExecuteEntryFunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 762D5A922214ACBA0066EE74 /* ExecuteEntryFunctions.cpp */; };
-		762D5AEB221638810066EE74 /* jcapimin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E89221273D9008CFD95 /* jcapimin.cpp */; };
-		762D5AEC221638810066EE74 /* jcapistd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E91221273D9008CFD95 /* jcapistd.cpp */; };
-		762D5AED221638810066EE74 /* jccoefct.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EB4221273D9008CFD95 /* jccoefct.cpp */; };
-		762D5AEE221638810066EE74 /* jccolor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EA1221273D9008CFD95 /* jccolor.cpp */; };
-		762D5AEF221638810066EE74 /* jcdctmgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EA8221273D9008CFD95 /* jcdctmgr.cpp */; };
-		762D5AF0221638810066EE74 /* jchuff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EAA221273D9008CFD95 /* jchuff.cpp */; };
-		762D5AF1221638810066EE74 /* jcinit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EB6221273D9008CFD95 /* jcinit.cpp */; };
-		762D5AF2221638810066EE74 /* jcmainct.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E92221273D9008CFD95 /* jcmainct.cpp */; };
-		762D5AF3221638810066EE74 /* jcmarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EBE221273D9008CFD95 /* jcmarker.cpp */; };
-		762D5AF4221638810066EE74 /* jcmaster.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E9A221273D9008CFD95 /* jcmaster.cpp */; };
-		762D5AF5221638810066EE74 /* jcomapi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E96221273D9008CFD95 /* jcomapi.cpp */; };
-		762D5AF6221638810066EE74 /* jcparam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E9D221273D9008CFD95 /* jcparam.cpp */; };
-		762D5AF7221638810066EE74 /* jcphuff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E98221273D9008CFD95 /* jcphuff.cpp */; };
-		762D5AF8221638810066EE74 /* jcprepct.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E8A221273D9008CFD95 /* jcprepct.cpp */; };
-		762D5AF9221638810066EE74 /* jcsample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EB1221273D9008CFD95 /* jcsample.cpp */; };
-		762D5AFA221638810066EE74 /* jctrans.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EA2221273D9008CFD95 /* jctrans.cpp */; };
-		762D5AFB221638810066EE74 /* jdapimin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E9C221273D9008CFD95 /* jdapimin.cpp */; };
-		762D5AFC221638810066EE74 /* jdapistd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E99221273D9008CFD95 /* jdapistd.cpp */; };
-		762D5AFD221638810066EE74 /* jdatadst.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E94221273D9008CFD95 /* jdatadst.cpp */; };
-		762D5AFE221638810066EE74 /* jdatasrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EA6221273D9008CFD95 /* jdatasrc.cpp */; };
-		762D5AFF221638810066EE74 /* jdcoefct.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EAC221273D9008CFD95 /* jdcoefct.cpp */; };
-		762D5B00221638810066EE74 /* jdcolor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EB9221273D9008CFD95 /* jdcolor.cpp */; };
-		762D5B01221638810066EE74 /* jddctmgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EBB221273D9008CFD95 /* jddctmgr.cpp */; };
-		762D5B02221638810066EE74 /* jdhuff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E87221273D9008CFD95 /* jdhuff.cpp */; };
-		762D5B03221638810066EE74 /* jdinput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EA7221273D9008CFD95 /* jdinput.cpp */; };
-		762D5B04221638810066EE74 /* jdmainct.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E8E221273D9008CFD95 /* jdmainct.cpp */; };
-		762D5B05221638810066EE74 /* jdmarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EA9221273D9008CFD95 /* jdmarker.cpp */; };
-		762D5B06221638810066EE74 /* jdmaster.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E90221273D9008CFD95 /* jdmaster.cpp */; };
-		762D5B07221638810066EE74 /* jdmerge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EB7221273D9008CFD95 /* jdmerge.cpp */; };
-		762D5B08221638810066EE74 /* jdphuff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E8F221273D9008CFD95 /* jdphuff.cpp */; };
-		762D5B09221638810066EE74 /* jdpostct.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E93221273D9008CFD95 /* jdpostct.cpp */; };
-		762D5B0A221638810066EE74 /* jdsample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EB5221273D9008CFD95 /* jdsample.cpp */; };
-		762D5B0B221638810066EE74 /* jdtrans.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EBA221273D9008CFD95 /* jdtrans.cpp */; };
-		762D5B0C221638810066EE74 /* jerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EB8221273D9008CFD95 /* jerror.cpp */; };
-		762D5B0D221638810066EE74 /* jfdctflt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EAF221273D9008CFD95 /* jfdctflt.cpp */; };
-		762D5B0E221638810066EE74 /* jfdctfst.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EBC221273D9008CFD95 /* jfdctfst.cpp */; };
-		762D5B0F221638810066EE74 /* jfdctint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EB3221273D9008CFD95 /* jfdctint.cpp */; };
-		762D5B10221638810066EE74 /* jidctflt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E8D221273D9008CFD95 /* jidctflt.cpp */; };
-		762D5B11221638810066EE74 /* jidctfst.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E9E221273D9008CFD95 /* jidctfst.cpp */; };
-		762D5B12221638810066EE74 /* jidctint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E9B221273D9008CFD95 /* jidctint.cpp */; };
-		762D5B13221638810066EE74 /* jidctred.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E8B221273D9008CFD95 /* jidctred.cpp */; };
-		762D5B14221638810066EE74 /* jmemmgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E86221273D9008CFD95 /* jmemmgr.cpp */; };
-		762D5B15221638810066EE74 /* jmemnobs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E97221273D9008CFD95 /* jmemnobs.cpp */; };
-		762D5B16221638810066EE74 /* jquant1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EA0221273D9008CFD95 /* jquant1.cpp */; };
-		762D5B17221638810066EE74 /* jquant2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734E9F221273D9008CFD95 /* jquant2.cpp */; };
-		762D5B18221638810066EE74 /* jutils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76734EA5221273D9008CFD95 /* jutils.cpp */; };
 		762D5B27221638900066EE74 /* PlyFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7619BF1E220E243A003B2F5C /* PlyFile.cpp */; };
 		7664E3D82213436600BC5377 /* PoissonReconExecute.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7664E3D72213436600BC5377 /* PoissonReconExecute.hpp */; };
 		7664E3DF22138EE600BC5377 /* SurfaceTrimmerExecute.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7664E3DD22138EE600BC5377 /* SurfaceTrimmerExecute.hpp */; };
@@ -852,55 +806,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				762D5B17221638810066EE74 /* jquant2.cpp in Sources */,
-				762D5AF7221638810066EE74 /* jcphuff.cpp in Sources */,
 				762D5AD5221630A00066EE74 /* ExecuteEntryFunctions.cpp in Sources */,
-				762D5AF8221638810066EE74 /* jcprepct.cpp in Sources */,
-				762D5AEC221638810066EE74 /* jcapistd.cpp in Sources */,
-				762D5B0B221638810066EE74 /* jdtrans.cpp in Sources */,
-				762D5B0A221638810066EE74 /* jdsample.cpp in Sources */,
-				762D5AF9221638810066EE74 /* jcsample.cpp in Sources */,
-				762D5AFF221638810066EE74 /* jdcoefct.cpp in Sources */,
-				762D5B0C221638810066EE74 /* jerror.cpp in Sources */,
-				762D5B12221638810066EE74 /* jidctint.cpp in Sources */,
-				762D5B07221638810066EE74 /* jdmerge.cpp in Sources */,
-				762D5B03221638810066EE74 /* jdinput.cpp in Sources */,
-				762D5B01221638810066EE74 /* jddctmgr.cpp in Sources */,
-				762D5B0D221638810066EE74 /* jfdctflt.cpp in Sources */,
-				762D5AF3221638810066EE74 /* jcmarker.cpp in Sources */,
-				762D5B13221638810066EE74 /* jidctred.cpp in Sources */,
-				762D5AEB221638810066EE74 /* jcapimin.cpp in Sources */,
-				762D5AEF221638810066EE74 /* jcdctmgr.cpp in Sources */,
-				762D5B14221638810066EE74 /* jmemmgr.cpp in Sources */,
-				762D5AF5221638810066EE74 /* jcomapi.cpp in Sources */,
 				762D5B27221638900066EE74 /* PlyFile.cpp in Sources */,
-				762D5AF2221638810066EE74 /* jcmainct.cpp in Sources */,
-				762D5AEE221638810066EE74 /* jccolor.cpp in Sources */,
-				762D5AED221638810066EE74 /* jccoefct.cpp in Sources */,
-				762D5B08221638810066EE74 /* jdphuff.cpp in Sources */,
-				762D5AF0221638810066EE74 /* jchuff.cpp in Sources */,
-				762D5B06221638810066EE74 /* jdmaster.cpp in Sources */,
-				762D5B11221638810066EE74 /* jidctfst.cpp in Sources */,
-				762D5B0E221638810066EE74 /* jfdctfst.cpp in Sources */,
-				762D5B16221638810066EE74 /* jquant1.cpp in Sources */,
-				762D5AFC221638810066EE74 /* jdapistd.cpp in Sources */,
-				762D5B02221638810066EE74 /* jdhuff.cpp in Sources */,
-				762D5AFA221638810066EE74 /* jctrans.cpp in Sources */,
-				762D5AFD221638810066EE74 /* jdatadst.cpp in Sources */,
-				762D5B10221638810066EE74 /* jidctflt.cpp in Sources */,
-				762D5AFE221638810066EE74 /* jdatasrc.cpp in Sources */,
-				762D5B15221638810066EE74 /* jmemnobs.cpp in Sources */,
-				762D5AF1221638810066EE74 /* jcinit.cpp in Sources */,
-				762D5B09221638810066EE74 /* jdpostct.cpp in Sources */,
-				762D5AF6221638810066EE74 /* jcparam.cpp in Sources */,
-				762D5AFB221638810066EE74 /* jdapimin.cpp in Sources */,
-				762D5AF4221638810066EE74 /* jcmaster.cpp in Sources */,
-				762D5B18221638810066EE74 /* jutils.cpp in Sources */,
-				762D5B0F221638810066EE74 /* jfdctint.cpp in Sources */,
-				762D5B00221638810066EE74 /* jdcolor.cpp in Sources */,
 				762D5AD4221630910066EE74 /* MeshingOperation.mm in Sources */,
-				762D5B04221638810066EE74 /* jdmainct.cpp in Sources */,
-				762D5B05221638810066EE74 /* jdmarker.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1017,12 +925,13 @@
 				CLANG_ENABLE_MODULES = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "arm64 x86_64";
 			};
 			name = Debug;
 		};
@@ -1037,7 +946,9 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "arm64 x86_64";
 			};
 			name = Release;
 		};
