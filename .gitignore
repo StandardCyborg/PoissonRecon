@@ -14,3 +14,4 @@
 xcuserdata/
 *.xcuserdatad
 *.xccheckout
+build/
