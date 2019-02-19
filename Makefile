@@ -11,8 +11,8 @@ EH_SOURCE=PlyFile.cpp EDTInHeat.cpp
 IS_SOURCE=ImageStitching.cpp
 AV_SOURCE=PlyFile.cpp AdaptiveTreeVisualization.cpp
 
-COMPILER = gcc
-#COMPILER = clang
+#COMPILER = gcc
+COMPILER = clang
 
 ifeq ($(COMPILER),gcc)
 	CFLAGS += -fopenmp -Wno-deprecated -std=c++11 -Wno-invalid-offsetof
@@ -40,8 +40,8 @@ ifeq ($(COMPILER),gcc)
 	CC=gcc
 	CXX=g++
 else
-	CC=clang-3.8
-	CXX=clang++-3.8
+	CC=clang
+	CXX=clang++
 #	CC=clang-3.5
 #	CXX=clang++-3.5
 endif

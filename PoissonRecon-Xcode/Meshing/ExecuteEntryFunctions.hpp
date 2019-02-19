@@ -12,9 +12,12 @@
 #include "Parameters.hpp"
 #include <functional>
 
-/** @param progressHandler Reports progress, from 0-1. The handler should return false if progress should stop, i.e. it was canceled. */
+/** @param progressHandler Reports progress, from 0-1. The handler should return false if progress should stop, i.e. it was canceled.
+    @param closed If true, uses Dirichlet boundary parameters instead of Neumann.
+ */
 extern void PoissonReconExecute(const char *inputFilePath,
                                 const char *outputFilePath,
+                                bool closed,
                                 PoissonReconParameters parameters,
                                 std::function<bool (float)> progressHandler);
 

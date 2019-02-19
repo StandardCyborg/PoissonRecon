@@ -20,12 +20,19 @@
 
 void PoissonReconExecute(const char *inputFilePath,
                          const char *outputFilePath,
+                         bool closed,
                          PoissonReconParameters parameters,
                          std::function<bool (float)> progressHandler)
 {
-    typedef IsotropicUIntPack<3, FEMDegreeAndBType<1, BOUNDARY_NEUMANN>::Signature> FEMSignature;
+    typedef IsotropicUIntPack<3, FEMDegreeAndBType<1, BOUNDARY_NEUMANN>::Signature> FEMSignatureNeumann;
+    typedef IsotropicUIntPack<3, FEMDegreeAndBType<1, BOUNDARY_DIRICHLET>::Signature> FEMSignatureDirichlet;
     typedef PointStreamColor<float> ColorType;
-    _PoissonReconExecute<ColorType>(inputFilePath, outputFilePath, parameters, progressHandler, FEMSignature());
+    
+    if (closed) {
+        _PoissonReconExecute<ColorType>(inputFilePath, outputFilePath, parameters, progressHandler, FEMSignatureDirichlet());
+    } else {
+        _PoissonReconExecute<ColorType>(inputFilePath, outputFilePath, parameters, progressHandler, FEMSignatureNeumann());
+    }
 }
 
 int SurfaceTrimmerExecute(const char* inputFilePath,

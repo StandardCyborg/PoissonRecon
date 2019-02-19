@@ -59,13 +59,13 @@ static const float kPoissonProgressFraction = 0.75;
     poissonParams.SamplesPerNode = (int)remapAndClamp(_smoothness, 1, 10, 1, 15);
     
     SurfaceTrimmerParameters surfaceTrimmerParams;
-    // The defaults are all fine for this one, so not exposing any knobs
+    surfaceTrimmerParams.Trim = (int)remapAndClamp(_surfaceTrimmingAmount, 1, 10, 1, 10);
     
     __weak MeshingOperation *weakSelf = self;
     auto progressHandler = _progressHandler;
     
     if (![weakSelf isCancelled]) {
-        PoissonReconExecute(inputPath, poissonOutputPath, poissonParams, [weakSelf, progressHandler](float progress) {
+        PoissonReconExecute(inputPath, poissonOutputPath, _closed, poissonParams, [weakSelf, progressHandler](float progress) {
             float adjustedProgress = remapAndClamp(progress, 0, 1, 0, kPoissonProgressFraction);
             
             progressHandler(adjustedProgress);
@@ -76,13 +76,18 @@ static const float kPoissonProgressFraction = 0.75;
     }
     
     if (![weakSelf isCancelled]) {
-        SurfaceTrimmerExecute(poissonOutputPath, surfaceTrimmerOutputPath, surfaceTrimmerParams, [weakSelf, progressHandler](float progress) {
-            float adjustedProgress = remapAndClamp(progress, 0, 1, kPoissonProgressFraction, 1);
-            progressHandler(adjustedProgress);
-            
-            BOOL shouldContinue = [weakSelf isCancelled];
-            return !shouldContinue;
-        });
+        if (_surfaceTrimmingAmount <= 0) {
+            // Trimming disabled, just move the file to the destination
+            [[NSFileManager defaultManager] moveItemAtPath:tempPoissonOutputPathString toPath:_outputFilePath error:NULL];
+        } else {
+            SurfaceTrimmerExecute(poissonOutputPath, surfaceTrimmerOutputPath, surfaceTrimmerParams, [weakSelf, progressHandler](float progress) {
+                float adjustedProgress = remapAndClamp(progress, 0, 1, kPoissonProgressFraction, 1);
+                progressHandler(adjustedProgress);
+                
+                BOOL shouldContinue = [weakSelf isCancelled];
+                return !shouldContinue;
+            });
+        }
     }
     
     [[NSFileManager defaultManager] removeItemAtPath:tempPoissonOutputPathString error:NULL];

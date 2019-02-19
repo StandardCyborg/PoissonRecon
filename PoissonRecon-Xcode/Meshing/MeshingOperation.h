@@ -33,4 +33,13 @@
  */
 @property (nonatomic) int smoothness;
 
+/** The amount of surface trimming for low-density mesh regions.
+    Range is 0-10, defaults to 5; higher numbers trim more away; 0 = don't trim.
+ */
+@property (nonatomic) int surfaceTrimmingAmount;
+
+/** If YES, attempts to build a closed mesh.
+ */
+@property (nonatomic) BOOL closed;
+
 @end

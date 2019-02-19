@@ -25,9 +25,12 @@
     MeshingOperation *operation = [[MeshingOperation alloc] initWithInputFilePath:inputPath outputFilePath:outputPath];
     operation.resolution = 5;
     operation.smoothness = 1;
+    operation.surfaceTrimmingAmount = 7;
+    operation.closed = YES;
     [operation start];
     
     NSLog(@"Finished with output at %@", outputPath);
+    XCTAssertTrue([[NSFileManager defaultManager] fileExistsAtPath:outputPath]);
 }
 
 @end

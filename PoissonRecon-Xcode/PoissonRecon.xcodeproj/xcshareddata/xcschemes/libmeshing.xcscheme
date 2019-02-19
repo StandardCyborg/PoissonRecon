@@ -28,7 +28,26 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "7691CAED20927C200029084C"
+               BuildableName = "MeshingTests.xctest"
+               BlueprintName = "MeshingTests"
+               ReferencedContainer = "container:PoissonRecon.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "762D5AC022162C0B0066EE74"
+            BuildableName = "libmeshing.a"
+            BlueprintName = "meshing"
+            ReferencedContainer = "container:PoissonRecon.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
