@@ -26,18 +26,17 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
 DAMAGE.
 */
 
-
-///////////////////////////////
-// MemoryOrientedPointStream //
-///////////////////////////////
-template< class Real >
-MemoryOrientedPointStream< Real >::MemoryOrientedPointStream( size_t pointCount , const OrientedPoint3D< Real >* points ){ _points = points , _pointCount = pointCount , _current = 0; }
-template< class Real >
-MemoryOrientedPointStream< Real >::~MemoryOrientedPointStream( void ){ ; }
-template< class Real >
-void MemoryOrientedPointStream< Real >::reset( void ) { _current=0; }
-template< class Real >
-bool MemoryOrientedPointStream< Real >::nextPoint( OrientedPoint3D< Real >& p )
+////////////////////////////
+// MemoryInputPointStream //
+////////////////////////////
+template< class Real , int Dim >
+MemoryInputPointStream< Real , Dim >::MemoryInputPointStream( size_t pointCount , const Point< Real , Dim >* points ){ _points = points , _pointCount = pointCount , _current = 0; }
+template< class Real , int Dim >
+MemoryInputPointStream< Real , Dim >::~MemoryInputPointStream( void ){ ; }
+template< class Real , int Dim >
+void MemoryInputPointStream< Real , Dim >::reset( void ) { _current=0; }
+template< class Real , int Dim >
+bool MemoryInputPointStream< Real , Dim >::nextPoint( Point< Real , Dim >& p )
 {
 	if( _current>=_pointCount ) return false;
 	p = _points[_current];
@@ -45,177 +44,154 @@ bool MemoryOrientedPointStream< Real >::nextPoint( OrientedPoint3D< Real >& p )
 	return true;
 }
 
-//////////////////////////////
-// ASCIIOrientedPointStream //
-//////////////////////////////
-template< class Real >
-ASCIIOrientedPointStream< Real >::ASCIIOrientedPointStream( const char* fileName )
+///////////////////////////
+// ASCIIInputPointStream //
+///////////////////////////
+template< class Real , int Dim >
+ASCIIInputPointStream< Real , Dim >::ASCIIInputPointStream( const char* fileName )
 {
 	_fp = fopen( fileName , "r" );
-	if( !_fp ) fprintf( stderr , "Failed to open file for reading: %s\n" , fileName ) , exit( 0 );
+	if( !_fp ) ERROR_OUT( "Failed to open file for reading: %s" , fileName );
 }
-template< class Real >
-ASCIIOrientedPointStream< Real >::~ASCIIOrientedPointStream( void )
+template< class Real , int Dim >
+ASCIIInputPointStream< Real , Dim >::~ASCIIInputPointStream( void )
 {
 	fclose( _fp );
 	_fp = NULL;
 }
-template< class Real >
-void ASCIIOrientedPointStream< Real >::reset( void ) { fseek( _fp , SEEK_SET , 0 ); }
-template< class Real >
-bool ASCIIOrientedPointStream< Real >::nextPoint( OrientedPoint3D< Real >& p )
+template< class Real , int Dim >
+void ASCIIInputPointStream< Real , Dim >::reset( void ) { fseek( _fp , SEEK_SET , 0 ); }
+template< class Real , int Dim >
+bool ASCIIInputPointStream< Real , Dim >::nextPoint( Point< Real , Dim >& p )
 {
-	float c[2*3];
-	if( fscanf( _fp , " %f %f %f %f %f %f " , &c[0] , &c[1] , &c[2] , &c[3] , &c[4] , &c[5] )!=2*3 ) return false;
-	p.p[0] = c[0] , p.p[1] = c[1] , p.p[2] = c[2];
-	p.n[0] = c[3] , p.n[1] = c[4] , p.n[2] = c[5];
+	float c;
+	for( int d=0 ; d<Dim ; d++ )
+		if( fscanf( _fp , " %f " , &c )!=1 ) return false;
+		else p[d] = (Real)c;
 	return true;
 }
 
-///////////////////////////////
-// BinaryOrientedPointStream //
-///////////////////////////////
-template< class Real , class RealOnDisk >
-BinaryOrientedPointStream< Real , RealOnDisk >::BinaryOrientedPointStream( const char* fileName )
+////////////////////////////
+// ASCIIOutputPointStream //
+////////////////////////////
+template< class Real , int Dim >
+ASCIIOutputPointStream< Real , Dim >::ASCIIOutputPointStream( const char* fileName )
 {
-	_pointsInBuffer = _currentPointIndex = 0;
-	_fp = fopen( fileName , "rb" );
-	if( !_fp ) fprintf( stderr , "Failed to open file for reading: %s\n" , fileName ) , exit( 0 );
+	_fp = fopen( fileName , "w" );
+	if( !_fp ) ERROR_OUT( "Failed to open file for writing: %s" , fileName );
 }
-template< class Real , class RealOnDisk >
-BinaryOrientedPointStream< Real , RealOnDisk >::~BinaryOrientedPointStream( void )
+template< class Real , int Dim >
+ASCIIOutputPointStream< Real , Dim >::~ASCIIOutputPointStream( void )
 {
 	fclose( _fp );
 	_fp = NULL;
 }
-template< class Real , class RealOnDisk >
-void BinaryOrientedPointStream< Real , RealOnDisk >::reset( void )
+template< class Real , int Dim >
+void ASCIIOutputPointStream< Real , Dim >::nextPoint( const Point< Real , Dim >& p )
 {
-	fseek( _fp , SEEK_SET , 0 );
-	_pointsInBuffer = _currentPointIndex = 0;
-}
-template< class Real , class RealOnDisk >
-bool BinaryOrientedPointStream< Real , RealOnDisk >::nextPoint( OrientedPoint3D< Real >& p )
-{
-	if( _currentPointIndex<_pointsInBuffer )
-	{
-		p = OrientedPoint3D< Real >( _pointBuffer[ _currentPointIndex ] );
-		_currentPointIndex++;
-		return true;
-	}
-	else
-	{
-		_currentPointIndex = 0;
-		_pointsInBuffer = int( fread( _pointBuffer , sizeof( OrientedPoint3D< RealOnDisk > ) , POINT_BUFFER_SIZE , _fp ) );
-		if( !_pointsInBuffer ) return false;
-		else return nextPoint( p );
-	}
+	for( int d=0 ; d<Dim ; d++ ) fprintf( _fp , " %f" , (float)p[d] ); 
+	fprintf( _fp , "\n" );
 }
 
 ////////////////////////////
-// PLYOrientedPointStream //
+// BinaryInputPointStream //
 ////////////////////////////
-template< class Real >
-PLYOrientedPointStream< Real >::PLYOrientedPointStream( const char* fileName )
+template< class Real , int Dim >
+BinaryInputPointStream< Real , Dim >::BinaryInputPointStream( const char* fileName )
+{
+	_fp = fopen( fileName , "rb" );
+	if( !_fp ) ERROR_OUT( "Failed to open file for reading: %s" , fileName );
+}
+template< class Real , int Dim >
+bool BinaryInputPointStream< Real , Dim >::nextPoint( Point< Real , Dim >& p ){ return fread( &p , sizeof(Point< Real , Dim >) , 1 , _fp )==1; }
+
+/////////////////////////////
+// BinaryOutputPointStream //
+/////////////////////////////
+template< class Real , int Dim >
+BinaryOutputPointStream< Real , Dim >::BinaryOutputPointStream( const char* fileName )
+{
+	_fp = fopen( fileName , "wb" );
+	if( !_fp ) ERROR_OUT( "Failed to open file for writing: %s" , fileName );
+}
+template< class Real , int Dim >
+void BinaryOutputPointStream< Real , Dim >::nextPoint( const Point< Real , Dim >& p ){ fwrite( &p , sizeof(Point< Real , Dim >) , 1 , _fp )==1; }
+
+/////////////////////////
+// PLYInputPointStream //
+/////////////////////////
+template< class Real , int Dim >
+PLYInputPointStream< Real , Dim >::PLYInputPointStream( const char* fileName )
 {
 	_fileName = new char[ strlen( fileName )+1 ];
 	strcpy( _fileName , fileName );
 	_ply = NULL;
 	reset();
 }
-template< class Real >
-void PLYOrientedPointStream< Real >::reset( void )
+template< class Real , int Dim >
+void PLYInputPointStream< Real , Dim >::reset( void )
 {
 	int fileType;
 	float version;
-	PlyProperty** plist;
+	std::vector< PlyProperty * > plist;
 	if( _ply ) _free();
-	_ply = ply_open_for_reading( _fileName, &_nr_elems, &_elist, &fileType, &version );
-	if( !_ply )
-	{
-		fprintf( stderr, "[ERROR] Failed to open ply file for reading: %s\n" , _fileName );
-		exit( 0 );
-	}
+	_ply = PlyFile::Read( _fileName, _elist, fileType, version );
+	if( !_ply ) ERROR_OUT( "Failed to open ply file for reading: %s" , _fileName );
+
 	bool foundVertices = false;
-	for( int i=0 ; i<_nr_elems ; i++ )
+	for( int i=0 ; i<_elist.size() ; i++ )
 	{
 		int num_elems;
-		int nr_props;
-		char* elem_name = _elist[i];
-		plist = ply_get_element_description( _ply , elem_name , &num_elems , &nr_props );
-		if( !plist )
-		{
-			fprintf( stderr , "[ERROR] Failed to get element description: %s\n" , elem_name );
-			exit( 0 );
-		}	
+		std::string &elem_name = _elist[i];
+		plist = _ply->get_element_description( elem_name , num_elems );
+		if( !plist.size() ) ERROR_OUT( "Failed to get element description: %s" , elem_name );
 
-		if( equal_strings( "vertex" , elem_name ) )
+		if( elem_name=="vertex" )
 		{
 			foundVertices = true;
 			_pCount = num_elems , _pIdx = 0;
-			for( int i=0 ; i<PlyOrientedVertex< Real >::ReadComponents ; i++ ) 
-				if( !ply_get_property( _ply , elem_name , &(PlyOrientedVertex< Real >::ReadProperties[i]) ) )
-				{
-					fprintf( stderr , "[ERROR] Failed to find property in ply file: %s\n" , PlyOrientedVertex< Real >::ReadProperties[i].name );
-					exit( 0 );
-				}
+			for( int i=0 ; i<PlyVertex< Real , Dim >::ReadComponents ; i++ ) 
+				if( !_ply->get_property( elem_name , &(PlyVertex< Real , Dim >::Properties()[i]) ) ) ERROR_OUT( "Failed to find property in ply file: %s" , PlyVertex< Real , Dim >::Properties()[i].name );
 		}
-		for( int j=0 ; j<nr_props ; j++ )
-		{
-			free( plist[j]->name );
-			free( plist[j] );
-		}
-		free( plist );
+		for( int j=0 ; j<plist.size() ; j++ ) delete plist[j];
 		if( foundVertices ) break;
 	}
-	if( !foundVertices )
-	{
-		fprintf( stderr , "[ERROR] Could not find vertices in ply file\n" );
-		exit( 0 );
-	}
+	if( !foundVertices ) ERROR_OUT( "Could not find vertices in ply file" );
 }
-template< class Real >
-void PLYOrientedPointStream< Real >::_free( void )
-{
-	if( _ply ) ply_close( _ply ) , _ply = NULL;
-	if( _elist )
-	{
-		for( int i=0 ; i<_nr_elems ; i++ ) free( _elist[i] );
-		free( _elist );
-	}
-}
-template< class Real >
-PLYOrientedPointStream< Real >::~PLYOrientedPointStream( void )
+template< class Real , int Dim >
+void PLYInputPointStream< Real , Dim >::_free( void ){ delete _ply; }
+
+template< class Real , int Dim >
+PLYInputPointStream< Real , Dim >::~PLYInputPointStream( void )
 {
 	_free();
 	if( _fileName ) delete[] _fileName , _fileName = NULL;
 }
-template< class Real >
-bool PLYOrientedPointStream< Real >::nextPoint( OrientedPoint3D< Real >& p )
+template< class Real , int Dim >
+bool PLYInputPointStream< Real , Dim >::nextPoint( Point< Real , Dim >& p )
 {
 	if( _pIdx<_pCount )
 	{
-		PlyOrientedVertex< Real > op;
-		ply_get_element( _ply, (void *)&op );
-		p.p = op.point;
-		p.n = op.normal;
+		PlyVertex< Real , Dim > v;
+		_ply->get_element( (void *)&v );
+		p = v.point;
 		_pIdx++;
 		return true;
 	}
 	else return false;
 }
 
-///////////////////////////////////////
-// MemoryOrientedPointStreamWithData //
-///////////////////////////////////////
-template< class Real , class Data >
-MemoryOrientedPointStreamWithData< Real , Data >::MemoryOrientedPointStreamWithData( size_t pointCount , const std::pair< OrientedPoint3D< Real > , Data >* points ){ _points = points , _pointCount = pointCount , _current = 0; }
-template< class Real , class Data >
-MemoryOrientedPointStreamWithData< Real , Data >::~MemoryOrientedPointStreamWithData( void ){ ; }
-template< class Real , class Data >
-void MemoryOrientedPointStreamWithData< Real , Data >::reset( void ) { _current=0; }
-template< class Real , class Data >
-bool MemoryOrientedPointStreamWithData< Real , Data >::nextPoint( OrientedPoint3D< Real >& p , Data& d )
+////////////////////////////////////
+// MemoryInputPointStreamWithData //
+////////////////////////////////////
+template< class Real , int Dim , class Data >
+MemoryInputPointStreamWithData< Real , Dim , Data >::MemoryInputPointStreamWithData( size_t pointCount , const std::pair< Point< Real , Dim > , Data >* points ){ _points = points , _pointCount = pointCount , _current = 0; }
+template< class Real , int Dim , class Data >
+MemoryInputPointStreamWithData< Real , Dim , Data >::~MemoryInputPointStreamWithData( void ){ ; }
+template< class Real , int Dim , class Data >
+void MemoryInputPointStreamWithData< Real , Dim , Data >::reset( void ) { _current=0; }
+template< class Real , int Dim , class Data >
+bool MemoryInputPointStreamWithData< Real , Dim , Data >::nextPoint( Point< Real , Dim >& p , Data& d )
 {
 	if( _current>=_pointCount ) return false;
 	p = _points[_current].first;
@@ -224,185 +200,252 @@ bool MemoryOrientedPointStreamWithData< Real , Data >::nextPoint( OrientedPoint3
 	return true;
 }
 
-//////////////////////////////////////
-// ASCIIOrientedPointStreamWithData //
-//////////////////////////////////////
-template< class Real , class Data >
-ASCIIOrientedPointStreamWithData< Real , Data >::ASCIIOrientedPointStreamWithData( const char* fileName , Data (*readData)( FILE* ) ) : _readData( readData )
+///////////////////////////////////
+// ASCIIInputPointStreamWithData //
+///////////////////////////////////
+template< class Real , int Dim , class Data >
+ASCIIInputPointStreamWithData< Real , Dim , Data >::ASCIIInputPointStreamWithData( const char* fileName , void (*ReadData)( FILE* , Data& ) ) : _ReadData( ReadData )
 {
 	_fp = fopen( fileName , "r" );
-	if( !_fp ) fprintf( stderr , "Failed to open file for reading: %s\n" , fileName ) , exit( 0 );
+	if( !_fp ) ERROR_OUT( "Failed to open file for reading: %s" , fileName );
 }
-template< class Real , class Data >
-ASCIIOrientedPointStreamWithData< Real , Data >::~ASCIIOrientedPointStreamWithData( void )
+template< class Real , int Dim , class Data >
+ASCIIInputPointStreamWithData< Real , Dim , Data >::~ASCIIInputPointStreamWithData( void )
 {
 	fclose( _fp );
 	_fp = NULL;
 }
-template< class Real , class Data >
-void ASCIIOrientedPointStreamWithData< Real , Data >::reset( void ) { fseek( _fp , SEEK_SET , 0 ); }
-template< class Real , class Data >
-bool ASCIIOrientedPointStreamWithData< Real , Data >::nextPoint( OrientedPoint3D< Real >& p , Data& d )
+template< class Real , int Dim , class Data >
+void ASCIIInputPointStreamWithData< Real , Dim , Data >::reset( void ) { fseek( _fp , SEEK_SET , 0 ); }
+template< class Real , int Dim , class Data >
+bool ASCIIInputPointStreamWithData< Real , Dim , Data >::nextPoint( Point< Real , Dim >& p , Data& d )
 {
-	float c[2*3];
-	if( fscanf( _fp , " %f %f %f %f %f %f " , &c[0] , &c[1] , &c[2] , &c[3] , &c[4] , &c[5] )!=2*3 ) return false;
-	p.p[0] = c[0] , p.p[1] = c[1] , p.p[2] = c[2];
-	p.n[0] = c[3] , p.n[1] = c[4] , p.n[2] = c[5];
-	d = _readData( _fp );
+	float c;
+	for( int dd=0 ; dd<Dim ; dd++ ) 
+		if( fscanf( _fp , " %f " , &c )!=1 ) return false;
+		else p[dd] = c;
+	_ReadData( _fp , d );
 	return true;
 }
 
-///////////////////////////////////////
-// BinaryOrientedPointStreamWithData //
-///////////////////////////////////////
-template< class Real , class Data , class RealOnDisk , class DataOnDisk >
-BinaryOrientedPointStreamWithData< Real , Data , RealOnDisk , DataOnDisk >::BinaryOrientedPointStreamWithData( const char* fileName )
+////////////////////////////////////
+// ASCIIOutputPointStreamWithData //
+////////////////////////////////////
+template< class Real , int Dim , class Data >
+ASCIIOutputPointStreamWithData< Real , Dim , Data >::ASCIIOutputPointStreamWithData( const char* fileName , void (*WriteData)( FILE* , const Data& ) ) : _WriteData( WriteData )
 {
-	_pointsInBuffer = _currentPointIndex = 0;
-	_fp = fopen( fileName , "rb" );
-	if( !_fp ) fprintf( stderr , "Failed to open file for reading: %s\n" , fileName ) , exit( 0 );
+	_fp = fopen( fileName , "w" );
+	if( !_fp ) ERROR_OUT( "Failed to open file for writing: %s" , fileName );
 }
-template< class Real , class Data , class RealOnDisk , class DataOnDisk >
-BinaryOrientedPointStreamWithData< Real , Data , RealOnDisk , DataOnDisk >::~BinaryOrientedPointStreamWithData( void )
+template< class Real , int Dim , class Data >
+ASCIIOutputPointStreamWithData< Real , Dim , Data >::~ASCIIOutputPointStreamWithData( void )
 {
 	fclose( _fp );
 	_fp = NULL;
 }
-template< class Real , class Data , class RealOnDisk , class DataOnDisk >
-void BinaryOrientedPointStreamWithData< Real , Data , RealOnDisk , DataOnDisk >::reset( void )
+template< class Real , int Dim , class Data >
+void ASCIIOutputPointStreamWithData< Real , Dim , Data >::nextPoint( const Point< Real , Dim >& p , const Data& d )
 {
-	fseek( _fp , SEEK_SET , 0 );
-	_pointsInBuffer = _currentPointIndex = 0;
-}
-template< class Real , class Data , class RealOnDisk , class DataOnDisk >
-bool BinaryOrientedPointStreamWithData< Real , Data , RealOnDisk , DataOnDisk >::nextPoint( OrientedPoint3D< Real >& p , Data& d )
-{
-	if( _currentPointIndex<_pointsInBuffer )
-	{
-		p = OrientedPoint3D< Real >( _pointBuffer[ _currentPointIndex ].first );
-		d = Data( _pointBuffer[ _currentPointIndex ].second );
-		_currentPointIndex++;
-		return true;
-	}
-	else
-	{
-		_currentPointIndex = 0;
-		_pointsInBuffer = int( fread( _pointBuffer , sizeof( std::pair< OrientedPoint3D< RealOnDisk > , DataOnDisk > ) , POINT_BUFFER_SIZE , _fp ) );
-		if( !_pointsInBuffer ) return false;
-		else return nextPoint( p , d );
-	}
+	for( int d=0 ; d<Dim ; d++ )  fprintf( _fp , " %f" , (float)p[d] );
+	fprintf( _fp , " " );
+	_WriteData( _fp , d );
+	fprintf( _fp , "\n" );
 }
 
 ////////////////////////////////////
-// PLYOrientedPointStreamWithData //
+// BinaryInputPointStreamWithData //
 ////////////////////////////////////
-template< class Real , class Data >
-PLYOrientedPointStreamWithData< Real , Data >::PLYOrientedPointStreamWithData( const char* fileName , const PlyProperty* dataProperties , int dataPropertiesCount , bool (*validationFunction)( const bool* ) ) : _dataPropertiesCount( dataPropertiesCount ) , _validationFunction( validationFunction )
+template< class Real , int Dim , class Data >
+BinaryInputPointStreamWithData< Real , Dim , Data >::BinaryInputPointStreamWithData( const char* fileName , void (*ReadData)( FILE* , Data& ) ) : _ReadData(ReadData)
+{
+	_fp = fopen( fileName , "rb" );
+	if( !_fp ) ERROR_OUT( "Failed to open file for reading: %s" , fileName );
+}
+template< class Real , int Dim , class Data >
+bool BinaryInputPointStreamWithData< Real , Dim , Data >::nextPoint( Point< Real , Dim >& p , Data& d )
+{
+	if( fread( &p , sizeof(Point< Real , Dim >) , 1 , _fp )==1 )
+	{
+		_ReadData( _fp , d );
+		return true;
+	}
+	else return false;
+}
+
+/////////////////////////////////////
+// BinaryOutputPointStreamWithData //
+/////////////////////////////////////
+template< class Real , int Dim , class Data >
+BinaryOutputPointStreamWithData< Real , Dim , Data >::BinaryOutputPointStreamWithData( const char* fileName , void (*WriteData)( FILE* , const Data& ) ) : _WriteData(WriteData)
+{
+	_fp = fopen( fileName , "wb" );
+	if( !_fp ) ERROR_OUT( "Failed to open file for writing: %s" , fileName );
+}
+template< class Real , int Dim , class Data >
+void BinaryOutputPointStreamWithData< Real , Dim , Data >::nextPoint( const Point< Real , Dim >& p , const Data& d )
+{
+	fwrite( &p , sizeof(Point< Real , Dim >) , 1 , _fp );
+	_WriteData( _fp , d );
+}
+
+/////////////////////////////////
+// PLYInputPointStreamWithData //
+/////////////////////////////////
+template< class Real , int Dim , class Data >
+PLYInputPointStreamWithData< Real , Dim , Data >::PLYInputPointStreamWithData( const char* fileName , const PlyProperty* dataProperties , int dataPropertiesCount , bool (*validationFunction)( const bool* ) ) : _dataPropertiesCount( dataPropertiesCount ) , _validationFunction( validationFunction )
 {
 	_dataProperties = new PlyProperty[ _dataPropertiesCount ];
-	memcpy( _dataProperties , dataProperties , sizeof(PlyProperty) * _dataPropertiesCount );
-	for( int i=0 ; i<_dataPropertiesCount ; i++ ) _dataProperties[i].offset += sizeof( PlyOrientedVertex< Real > );
+	for( int i=0 ; i<dataPropertiesCount ; i++ ) _dataProperties[i] = dataProperties[i];
+	for( int i=0 ; i<_dataPropertiesCount ; i++ ) _dataProperties[i].offset += sizeof( PlyVertex< Real , Dim > );
 	_fileName = new char[ strlen( fileName )+1 ];
 	strcpy( _fileName , fileName );
 	_ply = NULL;
 	reset();
 }
-template< class Real , class Data >
-void PLYOrientedPointStreamWithData< Real , Data >::reset( void )
+template< class Real , int Dim , class Data >
+void PLYInputPointStreamWithData< Real , Dim , Data >::reset( void )
 {
 	int fileType;
 	float version;
-	PlyProperty** plist;
+	std::vector< PlyProperty * > plist;
 	if( _ply ) _free();
-	_ply = ply_open_for_reading( _fileName, &_nr_elems, &_elist, &fileType, &version );
-	if( !_ply )
-	{
-		fprintf( stderr, "[ERROR] Failed to open ply file for reading: %s\n" , _fileName );
-		exit( 0 );
-	}
+	_ply = PlyFile::Read( _fileName , _elist , fileType , version );
+	if( !_ply ) ERROR_OUT( "Failed to open ply file for reading: %s" , _fileName );
+
 	bool foundVertices = false;
-	for( int i=0 ; i<_nr_elems ; i++ )
+	for( int i=0 ; i<_elist.size() ; i++ )
 	{
 		int num_elems;
-		int nr_props;
-		char* elem_name = _elist[i];
-		plist = ply_get_element_description( _ply , elem_name , &num_elems , &nr_props );
-		if( !plist )
-		{
-			fprintf( stderr , "[ERROR] Failed to get element description: %s\n" , elem_name );
-			exit( 0 );
-		}	
+		std::string &elem_name = _elist[i];
+		plist = _ply->get_element_description( elem_name , num_elems );
+		if( !plist.size() ) ERROR_OUT( "Failed to get element description: %s" , elem_name.c_str() );
 
-		if( equal_strings( "vertex" , elem_name ) )
+		if( elem_name=="vertex" )
 		{
 			foundVertices = true;
 			_pCount = num_elems , _pIdx = 0;
-			for( int i=0 ; i<PlyOrientedVertex< Real >::ReadComponents ; i++ ) 
-				if( !ply_get_property( _ply , elem_name , &(PlyOrientedVertex< Real >::ReadProperties[i]) ) )
-				{
-					fprintf( stderr , "[ERROR] Failed to find property in ply file: %s\n" , PlyOrientedVertex< Real >::ReadProperties[i].name );
-					exit( 0 );
-				}
+			const PlyProperty* PlyReadProperties = PlyVertex< Real , Dim >::PlyReadProperties();
+			for( int i=0 ; i<PlyVertex< Real , Dim >::PlyReadNum ; i++ ) 
+				if( !_ply->get_property( elem_name , &(PlyReadProperties[i]) ) ) ERROR_OUT( "Failed to find property in ply file: %s" , PlyReadProperties[i].name.c_str() );
+
 			if( _validationFunction )
 			{
 				bool* properties = new bool[_dataPropertiesCount];
 				for( int i=0 ; i<_dataPropertiesCount ; i++ )
-					if( !ply_get_property( _ply , elem_name , &(_dataProperties[i]) ) ) properties[i] = false;
-					else                                                                properties[i] = true;
+					if( !_ply->get_property( elem_name , &(_dataProperties[i]) ) ) properties[i] = false;
+					else                                                           properties[i] = true;
 				bool valid = _validationFunction( properties );
 				delete[] properties;
-				if( !valid ) fprintf( stderr , "[ERROR] Failed to validate properties in file\n" ) , exit( 0 );
+				if( !valid ) ERROR_OUT( "Failed to validate properties in file" );
 			}
 			else
 			{
 				for( int i=0 ; i<_dataPropertiesCount ; i++ )
-					if( !ply_get_property( _ply , elem_name , &(_dataProperties[i]) ) )
-						fprintf( stderr , "[WARNING] Failed to find property in ply file: %s\n" , _dataProperties[i].name );
+					if( !_ply->get_property( elem_name , &(_dataProperties[i]) ) ) WARN( "Failed to find property in ply file: %s" , _dataProperties[i].name.c_str() );
 			}
 		}
-		for( int j=0 ; j<nr_props ; j++ )
-		{
-			free( plist[j]->name );
-			free( plist[j] );
-		}
-		free( plist );
+		for( int j=0 ; j<plist.size() ; j++ ) delete plist[j];
 		if( foundVertices ) break;
 	}
-	if( !foundVertices )
-	{
-		fprintf( stderr , "[ERROR] Could not find vertices in ply file\n" );
-		exit( 0 );
-	}
+	if( !foundVertices ) ERROR_OUT( "Could not find vertices in ply file" );
 }
-template< class Real , class Data >
-void PLYOrientedPointStreamWithData< Real , Data >::_free( void )
-{
-	if( _ply ) ply_close( _ply ) , _ply = NULL;
-	if( _elist )
-	{
-		for( int i=0 ; i<_nr_elems ; i++ ) free( _elist[i] );
-		free( _elist );
-	}
-}
-template< class Real , class Data >
-PLYOrientedPointStreamWithData< Real , Data >::~PLYOrientedPointStreamWithData( void )
+template< class Real , int Dim , class Data >
+void PLYInputPointStreamWithData< Real , Dim , Data >::_free( void ){ delete _ply; }
+
+template< class Real , int Dim , class Data >
+PLYInputPointStreamWithData< Real , Dim , Data >::~PLYInputPointStreamWithData( void )
 {
 	_free();
 	if( _fileName ) delete[] _fileName , _fileName = NULL;
 	if( _dataProperties ) delete[] _dataProperties , _dataProperties = NULL;
 }
-template< class Real , class Data >
-bool PLYOrientedPointStreamWithData< Real , Data >::nextPoint( OrientedPoint3D< Real >& p , Data& d )
+template< class Real , int Dim , class Data >
+bool PLYInputPointStreamWithData< Real , Dim , Data >::nextPoint( Point< Real , Dim >& p , Data& d )
 {
 	if( _pIdx<_pCount )
 	{
-		_PlyOrientedVertexWithData op;
-		ply_get_element( _ply, (void *)&op );
-		p.p = op.point;
-		p.n = op.normal;
-		d = op.data;
+		_PlyVertexWithData v;
+		_ply->get_element( (void*) &v );
+		p = v.point;
+		d = v.data;
 		_pIdx++;
 		return true;
 	}
 	else return false;
+}
+
+//////////////////////////
+// PLYOutputPointStream //
+//////////////////////////
+template< class Real , int Dim >
+PLYOutputPointStream< Real , Dim >::PLYOutputPointStream( const char* fileName , size_t count , int fileType )
+{
+	float version;
+	std::vector< std::string > elem_names = { std::string( "vertex" ) };
+	_ply = PlyFile::Write( fileName , elem_names , fileType , version );
+	if( !_ply ) ERROR_OUT( "Failed to open ply file for writing: %s" , fileName );
+
+	_pIdx = 0;
+	_pCount = count;
+	_ply->element_count( "vertex" , _pCount );
+	for( int i=0 ; i<PlyVertex< Real , Dim >::WriteComponents ; i++ ) _ply->describe_property( "vertex" , &PlyVertex< Real , Dim >::WriteProperties()[i] );
+	_ply->header_complete();
+	_ply->put_element_setup( "vertex" );
+}
+template< class Real , int Dim >
+PLYOutputPointStream< Real , Dim >::~PLYOutputPointStream( void )
+{
+	if( _pIdx!=_pCount ) ERROR_OUT( "Streamed points not equal to total count: %d!=%d" , _pIdx , _pCount );
+	delete _ply;
+}
+template< class Real , int Dim >
+void PLYOutputPointStream< Real , Dim >::nextPoint( const Point< Real , Dim >& p )
+{
+	if( _pIdx==_pCount ) ERROR_OUT( "Trying to add more points than total: %d<%d" , _pIdx , _pCount );
+	PlyVertex< Real , Dim > op;
+	op.point = p;
+	_ply->put_element( (void *)&op );
+	_pIdx++;
+}
+
+//////////////////////////////////
+// PLYOutputPointStreamWithData //
+//////////////////////////////////
+template< class Real , int Dim , class Data >
+PLYOutputPointStreamWithData< Real , Dim , Data >::PLYOutputPointStreamWithData( const char* fileName , size_t count , int fileType , const PlyProperty* dataProperties , int dataPropertiesCount )
+{
+	float version;
+	std::vector< std::string > elem_names = { std::string( "vertex" ) };
+	_ply = PlyFile::Write( fileName , elem_names , fileType , version );
+	if( !_ply ) ERROR_OUT( "Failed to open ply file for writing: %s" , fileName );
+
+	_pIdx = 0;
+	_pCount = (int)count;
+	_ply->element_count( "vertex" , _pCount );
+	for( int i=0 ; i<PlyVertex< Real , Dim >::WriteComponents ; i++ ) _ply->describe_property( "vertex" , &PlyVertex< Real , Dim >::Properties()[i] );
+	for( int i=0 ; i<dataPropertiesCount ; i++ )
+	{
+		PlyProperty prop = dataProperties[i];
+		prop.offset += sizeof( PlyVertex< Real , Dim > );
+		_ply->describe_property( "vertex" , &prop );
+	}
+
+	_ply->header_complete();
+	_ply->put_element_setup( "vertex" );
+}
+template< class Real , int Dim , class Data >
+PLYOutputPointStreamWithData< Real , Dim , Data >::~PLYOutputPointStreamWithData( void )
+{
+	if( _pIdx!=_pCount ) ERROR_OUT( "Streamed points not equal to total count: %d!=%d" , _pIdx , _pCount );
+	delete _ply;
+}
+template< class Real , int Dim , class Data >
+void PLYOutputPointStreamWithData< Real , Dim , Data >::nextPoint( const Point< Real , Dim >& p , const Data& d )
+{
+	if( _pIdx==_pCount ) ERROR_OUT( "Trying to add more points than total: %d<%d" , _pIdx , _pCount );
+	_PlyVertexWithData op;
+	op.point = p;
+	op.data = d;
+	_ply->put_element( (void *)&op );
+	_pIdx++;
 }

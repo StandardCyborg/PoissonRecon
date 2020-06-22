@@ -5,3 +5,13 @@
 /Bin/
 *.opensdf
 *.bat
+*.zip
+.vs/*
+
+## Xcode
+*.pbxuser
+!default.pbxuser
+xcuserdata/
+*.xcuserdatad
+*.xccheckout
+build/
